@@ -2,7 +2,7 @@
 "Vue 3 Component": {
     "prefix": "vue3", 
     "body": [
-      "<script lang=\"tsx\">",
+      "<script lang=\"tsx\" setup>",
       "</script>",
       "",
       "<template>",

@@ -37,17 +37,8 @@ const modelValue = defineModel<string>({ required: true });
         'pl-10': icon && !drag,
         'pl-20': icon && drag,
         'pl-14': !icon && drag,
-        'pr-10': modelValue,
       }"
     />
-    <button
-      v-if="modelValue"
-      class="absolute right-3 mt-[2px] w-6 h-6 transition hover:bg-base-200 rounded-full flex items-center justify-center text-base-400/[.7]"
-      @click="modelValue = ''"
-      title="Limpar"
-    >
-      <font-awesome-icon icon="fa-solid fa-xmark" />
-    </button>
   </div>
 </template>
 

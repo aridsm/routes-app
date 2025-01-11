@@ -1,3 +1,5 @@
 <template>
-  <NuxtPage />
+  <div class="h-screen">
+    <NuxtPage />
+  </div>
 </template>
