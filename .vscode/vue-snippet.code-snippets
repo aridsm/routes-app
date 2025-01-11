@@ -1,0 +1,16 @@
+{
+"Vue 3 Component": {
+    "prefix": "vue3", 
+    "body": [
+      "<script lang=\"tsx\">",
+      "</script>",
+      "",
+      "<template>",
+      "</template>",
+      "",
+      "<style scoped>",
+      "</style>"
+    ],
+    "description": "Snippet base para o vue 3"
+  }
+}
