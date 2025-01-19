@@ -5,9 +5,45 @@ const props = defineProps({
   },
   icon: String,
   drag: Boolean,
+  lazy: Boolean,
+  debounceTime: {
+    type: Number,
+    default: 600,
+  },
 });
 
+const emits = defineEmits<{
+  (name: "debounce", value: string): void;
+}>();
+
 const modelValue = defineModel<string>({ required: true });
+const lazyValue = ref<string>(modelValue.value);
+const timeOut = ref();
+
+watch(
+  () => modelValue.value,
+  () => {
+    lazyValue.value = modelValue.value;
+  }
+);
+
+function onInput() {
+  clearTimeout(timeOut.value);
+
+  timeOut.value = setTimeout(() => {
+    emits("debounce", lazyValue.value);
+  }, props.debounceTime);
+
+  if (!props.lazy) {
+    modelValue.value = lazyValue.value;
+  }
+}
+
+function onBlur() {
+  if (props.lazy) {
+    modelValue.value = lazyValue.value;
+  }
+}
 </script>
 
 <template>
@@ -24,13 +60,13 @@ const modelValue = defineModel<string>({ required: true });
       :icon="icon"
       class="ml-4 absolute top-[14px]"
       :class="{
-        'text-base-300/[.35]': !modelValue,
+        'text-base-300/[.35]': !lazyValue,
         '!ml-14': drag,
       }"
     />
     <input
       type="text"
-      v-model="modelValue"
+      v-model="lazyValue"
       :placeholder="placeholder"
       class="bg-transparent w-full h-11 px-4 pt-1 placeholder:text-base-300/[.35] rounded-md outline-offset-1 focus:outline-purple-500"
       :class="{
@@ -38,6 +74,8 @@ const modelValue = defineModel<string>({ required: true });
         'pl-20': icon && drag,
         'pl-14': !icon && drag,
       }"
+      @input="onInput"
+      @blur="onBlur"
     />
   </div>
 </template>

@@ -1,35 +1,91 @@
 <script lang="tsx" setup>
+import type Leaflet from "leaflet";
+
+const emits = defineEmits<{
+  (name: "set-map", polyline: any, points: any): void;
+  (name: "set-summary", summary: Summary): void;
+}>();
+
+const L = inject("L");
+
+const segments = ref<Segment[]>();
+
 const locomotions = [
   {
-    id: "car",
+    id: "driving-car",
     text: "Carro",
     icon: "fa-solid fa-car",
   },
   {
-    id: "bicycle",
+    id: "cycling-regular",
     text: "Bicicleta",
     icon: "fa-solid fa-bicycle",
   },
   {
-    id: "feet",
+    id: "foot-walking",
     text: "A pé",
     icon: "fa-solid fa-person-walking",
   },
 ];
 
 const routeForm = ref({
-  locomotion: "car",
+  locomotion: "driving-car",
   destinies: [
     {
       id: 1,
       value: "",
+      coords: [],
     },
     {
       id: 2,
       value: "",
+      coords: [],
     },
-  ],
+  ] as Destiny[],
 });
+
+const currentDestinies = ref<Destiny[]>([]);
+
+async function getRoutes() {
+  const coords = routeForm.value.destinies.map((destiny) => destiny.coords);
+  const options = {
+    locomotion: routeForm.value.locomotion,
+    coordinates: coords,
+  };
+  await fetchRoutes(options as any)
+    .then((response) => response.json())
+    .then((data) => {
+      const polyline = data.features[0].geometry.coordinates.map(
+        (coordinate: any) => {
+          L as typeof Leaflet;
+          return (L as typeof Leaflet).latLng(coordinate[1], coordinate[0]);
+        }
+      );
+      emits("set-map", polyline, coords);
+      emits("set-summary", data.features[0].properties.summary);
+      segments.value = data.features[0].properties.segments;
+      currentDestinies.value = [...routeForm.value.destinies];
+    });
+}
+
+watch(
+  () => routeForm.value,
+  () => {},
+  {
+    deep: true,
+  }
+);
+
+async function setCurrentLocation() {
+  const pos: any = await getUserPosition();
+  routeForm.value.destinies[0].coords = [pos.longitude, pos.latitude];
+  routeForm.value.destinies[0].value =
+    routeForm.value.destinies[0].coords.join(", ");
+}
+
+const disabledCalculateRoute = computed(() =>
+  routeForm.value.destinies.some((destiny) => !destiny.coords.length)
+);
 </script>
 
 <template>
@@ -38,12 +94,11 @@ const routeForm = ref({
       <div
         class="bg-primary-1/[.1] h-8 rounded-full leading-none pr-6 pl-2 text-primary-1 text-sm gap-3 flex items-center"
       >
-        <button title="Voltar">
+        <button title="Voltar" class="flex">
           <font-awesome-icon
             icon="fa-solid fa-circle-chevron-left"
             class="text-xl"
           />
-          Voltar
         </button>
         <span class="pt-1">Minha nova rota</span>
       </div>
@@ -63,7 +118,7 @@ const routeForm = ref({
           <button
             v-for="locomotion in locomotions"
             :key="locomotion.id"
-            class="flex-1 bg-base-100 transition rounded-md h-11 flex items-center justify-center text-xl hover:bg-primary-2 hover:text-base-0"
+            class="flex-1 bg-base-100 rounded-md h-11 flex items-center justify-center text-xl hover:bg-base-200"
             :class="{
               '!bg-primary-2 !text-base-0':
                 routeForm.locomotion === locomotion.id,
@@ -76,21 +131,38 @@ const routeForm = ref({
       </section>
 
       <section class="px-6">
-        <h2 class="font-bold tracking-wide mb-2">
-          Destinos ({{ routeForm.destinies.length }})
-        </h2>
+        <div class="flex justify-between mb-2 items-center">
+          <h2 class="font-bold tracking-wide">Rota</h2>
+          <AppBtn
+            @click="
+              () =>
+                routeForm.destinies.push({
+                  id: Math.random(),
+                  value: '',
+                  coords: [],
+                })
+            "
+            icon
+            transparent
+            :disabled="routeForm.destinies.length > 5"
+            title="Adicionar destino"
+          >
+            <font-awesome-icon
+              icon="fa-solid fa-circle-plus"
+              class="!text-primary-1 text-xl"
+            />
+          </AppBtn>
+        </div>
 
         <div class="flex flex-col gap-3">
           <div
             v-for="(destiny, index) in routeForm.destinies"
             :key="destiny.id"
-            class="flex gap-2"
+            class="flex gap-2 items-center"
           >
-            <AppInputText
-              v-model="destiny.value"
-              icon="fa-solid fa-location-dot"
-              drag
-              placeholder="Localização ou coordenada"
+            <AppInputLocation
+              :destiny="destiny"
+              @change="Object.assign(destiny, $event)"
               class="flex-1"
             />
             <button
@@ -107,37 +179,75 @@ const routeForm = ref({
         <div class="flex justify-between items-center mt-3">
           <button
             class="bg-primary-1/[.1] rounded-full px-6 text-primary-1 hover:bg-primary-1/[.2] active:hover:bg-primary-1/[.3] pb-1 pt-2 text-sm gap-3 flex"
+            @click="() => setCurrentLocation()"
           >
             <font-awesome-icon icon="fa-solid fa-map-pin" />
             Usar localização atual
           </button>
-          <AppBtn
-            @click="
-              () => routeForm.destinies.push({ id: Math.random(), value: '' })
-            "
-          >
-            <font-awesome-icon icon="fa-solid fa-circle-plus" class="mr-2" />
-            Adicionar destino
+          <AppBtn @click="() => getRoutes()" :disabled="disabledCalculateRoute">
+            <font-awesome-icon icon="fa-solid fa-signs-post" class="mr-2" />
+            Calcular percurso
           </AppBtn>
         </div>
       </section>
 
-      <section class="px-6">
+      <section v-if="segments && currentDestinies.length" class="px-6">
         <h2 class="font-bold tracking-wide mb-2">Como chegar</h2>
-        <ul class="flex flex-col gap-4 list-decimal pl-4">
-          <li>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</li>
-          <li>
-            Laboriosam rerum culpa maiores voluptatum ex explicabo deleniti
+        <ul
+          v-for="(segment, index) in segments"
+          :key="segment.distance"
+          class="bg-base-100 rounded-md mt-2 overflow-hidden"
+        >
+          <li class="overflow-hidden">
+            <button
+              class="flex justify-between bg-base-100 z-10 relative items-center gap-4 p-4 pr-6 w-full transition"
+              :class="{
+                'bg-primary-2 text-base-0': segment.show,
+              }"
+              @click="() => (segment.show = !segment.show)"
+            >
+              <div class="w-full text-start flex flex-col gap-1">
+                <span class="text-sm block opacity-80">
+                  Trecho {{ index + 1 }}
+                </span>
+                <div class="flex gap-4 items-center font-bold">
+                  <p>{{ currentDestinies[index].value }}</p>
+
+                  <font-awesome-icon
+                    icon="fa-solid fa-chevron-right"
+                    class="text-xs mb-1"
+                  />
+                  <p>{{ currentDestinies[index + 1].value }}</p>
+                </div>
+                <div>
+                  {{ convertMetersToKm(segment.distance) }} km |
+                  {{ convertTime(segment.duration) }}
+                </div>
+              </div>
+              <font-awesome-icon
+                icon="fa-solid fa-chevron-left"
+                class="transition"
+                :class="{
+                  '-rotate-90': segment.show,
+                }"
+              />
+            </button>
+
+            <Transition>
+              <ul
+                v-if="segment.show"
+                class="flex flex-col list-decimal pr-4 py-6 !pl-10"
+              >
+                <li
+                  v-for="step in segment.steps"
+                  :key="step.way_points.toString()"
+                  class="item-step"
+                >
+                  {{ step.instruction }}
+                </li>
+              </ul>
+            </Transition>
           </li>
-          <li>Doloribus dicta ex sint quaerat aspernatur!</li>
-          <li>Odio accusamus at accusantium dignissimos dolorem nisi quod</li>
-          <li>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</li>
-          <li>
-            Laboriosam rerum culpa maiores voluptatum ex explicabo deleniti
-          </li>
-          <li>Doloribus dicta ex sint quaerat aspernatur!</li>
-          <li>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</li>
-          <li>Odio accusamus at accusantium dignissimos dolorem nisi quod</li>
         </ul>
       </section>
     </div>
@@ -154,4 +264,18 @@ const routeForm = ref({
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.item-step + .item-step {
+  @apply pt-4 mt-4 border-t border-t-base-200;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: all 0.2s ease;
+}
+.v-enter-from,
+.v-leave-to {
+  transform: translateY(-50%);
+  opacity: 0;
+}
+</style>

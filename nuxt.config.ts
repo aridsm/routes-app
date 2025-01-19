@@ -11,5 +11,9 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  css: ["~/assets/main.css", "@fortawesome/fontawesome-svg-core/styles.css"],
+  css: [
+    "~/assets/main.css",
+    "@fortawesome/fontawesome-svg-core/styles.css",
+    "leaflet/dist/leaflet.css",
+  ],
 });
