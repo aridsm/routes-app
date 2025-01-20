@@ -83,7 +83,9 @@ async function getRoutes() {
 
       segments.value = features.properties.segments;
       currentDestinies.value = JSON.parse(
-        JSON.stringify(routeForm.value.destinies)
+        JSON.stringify(
+          routeForm.value.destinies.filter((destiny) => destiny.coords?.length)
+        )
       );
     });
 }
@@ -125,13 +127,7 @@ function onSelectLocomotion(locomotionId: string) {
         </button>
         <span class="pt-1">Minha nova rota</span>
       </div>
-
-      <button
-        class="w-9 h-9 rounded-full hover:bg-base-100 flex items-center justify-center"
-        title="Opções"
-      >
-        <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
-      </button>
+      <!-- <AppOptions /> -->
     </div>
     <div class="flex-1 overflow-auto flex flex-col gap-8 pb-8">
       <section class="px-6">

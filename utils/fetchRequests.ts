@@ -2,7 +2,7 @@ const apiKey = "5b3ce3597851110001cf6248e5702cf024e241f9af91bbc0f047ed30";
 
 interface Options {
   coordinates: Array<number>[];
-  locomotion: "driving-car" | "foot-walking" | "cycling-regular";
+  locomotion: locomotion;
   language?: string;
 }
 

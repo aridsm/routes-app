@@ -1,3 +1,5 @@
+export type locomotion = "driving-car" | "foot-walking" | "cycling-regular";
+
 export interface Destiny {
   id: number;
   coords: number[];
@@ -28,4 +30,18 @@ export interface Summary {
 export interface Properties {
   summary: Summary;
   segments: Segment[];
+}
+
+export interface Option<T> {
+  text: string;
+  click: (item: T) => void;
+  icon?: string;
+  class?: string;
+}
+
+export interface Route {
+  id?: number;
+  name: string;
+  destinies: Destiny[];
+  locomotion: locomotion;
 }

@@ -10,6 +10,7 @@ const props = defineProps({
     type: Number,
     default: 600,
   },
+  label: String,
 });
 
 const emits = defineEmits<{
@@ -47,36 +48,41 @@ function onBlur() {
 </script>
 
 <template>
-  <div class="bg-base-100 rounded-md flex items-center text-base-300 relative">
-    <button
-      v-if="drag"
-      class="bg-base-200 w-10 h-full pt-[6px] cursor-grab rounded-l-md absolute"
+  <div>
+    <span class="text-primary-1 font-bold">{{ label }}</span>
+    <div
+      class="bg-base-100 rounded-md flex items-center text-base-300 relative"
     >
-      <font-awesome-icon icon="fa-solid fa-grip-vertical" />
-    </button>
+      <button
+        v-if="drag"
+        class="bg-base-200 w-10 h-full pt-[6px] cursor-grab rounded-l-md absolute"
+      >
+        <font-awesome-icon icon="fa-solid fa-grip-vertical" />
+      </button>
 
-    <font-awesome-icon
-      v-if="icon"
-      :icon="icon"
-      class="ml-4 absolute top-[14px]"
-      :class="{
-        'text-base-300/[.35]': !lazyValue,
-        '!ml-14': drag,
-      }"
-    />
-    <input
-      type="text"
-      v-model="lazyValue"
-      :placeholder="placeholder"
-      class="bg-transparent w-full h-11 px-4 pt-1 placeholder:text-base-300/[.35] rounded-md outline-offset-1 focus:outline-purple-500"
-      :class="{
-        'pl-10': icon && !drag,
-        'pl-20': icon && drag,
-        'pl-14': !icon && drag,
-      }"
-      @input="onInput"
-      @blur="onBlur"
-    />
+      <font-awesome-icon
+        v-if="icon"
+        :icon="icon"
+        class="ml-4 absolute top-[14px]"
+        :class="{
+          'text-base-300/[.35]': !lazyValue,
+          '!ml-14': drag,
+        }"
+      />
+      <input
+        type="text"
+        v-model="lazyValue"
+        :placeholder="placeholder"
+        class="bg-transparent w-full h-11 px-4 pt-1 placeholder:text-base-300/[.35] rounded-md outline-offset-1 focus:outline-purple-500"
+        :class="{
+          'pl-10': icon && !drag,
+          'pl-20': icon && drag,
+          'pl-14': !icon && drag,
+        }"
+        @input="onInput"
+        @blur="onBlur"
+      />
+    </div>
   </div>
 </template>
 

@@ -4,7 +4,7 @@ export function convertTime(seconds: number) {
   const minutes = Math.floor(((seconds % 86400) % 3600) / 60);
 
   if (days >= 1) {
-    return `${days} dias, ${hours}h ${minutes}min`;
+    return `${days}d ${hours}h ${minutes}min`;
   } else {
     return `${hours}h ${minutes}min`;
   }

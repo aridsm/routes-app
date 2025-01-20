@@ -16,4 +16,5 @@ export default defineNuxtConfig({
     "@fortawesome/fontawesome-svg-core/styles.css",
     "leaflet/dist/leaflet.css",
   ],
+  modules: ["@pinia/nuxt"],
 });
