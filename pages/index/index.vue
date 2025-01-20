@@ -2,7 +2,8 @@
 import type Leaflet from "leaflet";
 
 const emits = defineEmits<{
-  (name: "set-map", polyline: any, points: any): void;
+  (name: "set-polyline", polyline: any): void;
+  (name: "set-points", points: any, destinies: Destiny[]): void;
   (name: "set-summary", summary: Summary): void;
 }>();
 
@@ -52,19 +53,23 @@ async function getRoutes() {
     locomotion: routeForm.value.locomotion,
     coordinates: coords,
   };
+
   await fetchRoutes(options as any)
     .then((response) => response.json())
     .then((data) => {
-      const polyline = data.features[0].geometry.coordinates.map(
-        (coordinate: any) => {
-          L as typeof Leaflet;
-          return (L as typeof Leaflet).latLng(coordinate[1], coordinate[0]);
-        }
+      const features = data.features[0];
+      const polyline = features.geometry.coordinates.map((coordinate: any) => {
+        return (L as typeof Leaflet).latLng(coordinate[1], coordinate[0]);
+      });
+
+      emits("set-polyline", polyline);
+      emits("set-summary", features.properties.summary);
+      emits("set-points", coords, routeForm.value.destinies);
+
+      segments.value = features.properties.segments;
+      currentDestinies.value = JSON.parse(
+        JSON.stringify(routeForm.value.destinies)
       );
-      emits("set-map", polyline, coords);
-      emits("set-summary", data.features[0].properties.summary);
-      segments.value = data.features[0].properties.segments;
-      currentDestinies.value = [...routeForm.value.destinies];
     });
 }
 
@@ -175,6 +180,9 @@ const disabledCalculateRoute = computed(() =>
             </button>
           </div>
         </div>
+        <p v-if="disabledCalculateRoute" class="text-sm mt-1 text-red-600">
+          As coordenadas devem estar preenchidas
+        </p>
 
         <div class="flex justify-between items-center mt-3">
           <button
@@ -190,7 +198,6 @@ const disabledCalculateRoute = computed(() =>
           </AppBtn>
         </div>
       </section>
-
       <section v-if="segments && currentDestinies.length" class="px-6">
         <h2 class="font-bold tracking-wide mb-2">Como chegar</h2>
         <ul

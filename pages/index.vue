@@ -52,26 +52,7 @@ const tabs = [
   },
 ];
 
-function drawPolylines(coords: LatLngExpression[], points: number[][]) {
-  if (polylines.value) {
-    map.value?.removeLayer(polylines.value);
-  }
-
-  polylines.value = new (L as typeof Leaflet).Polyline(coords, {
-    color: "#745AC3",
-    weight: 5,
-  }).addTo(map.value!);
-
-  // polylines.value.on("mouseover", (event: any) => {
-  //   event.target.setStyle({ color: "#4CC285" });
-  // });
-
-  // polylines.value.bindTooltip("tooltip do polyline...", {
-  //   permanent: false,
-  //   direction: "top",
-  //   opacity: 0.8,
-  // });
-
+function drawPoints(points: number[][], destinies: Destiny[]) {
   circlePoints.value?.forEach((point: any) => {
     map.value?.removeLayer(point);
   });
@@ -90,11 +71,29 @@ function drawPolylines(coords: LatLngExpression[], points: number[][]) {
       })
       .addTo(map.value!);
 
+    point.bindTooltip(destinies[i].value, {
+      permanent: false,
+      direction: "top",
+      opacity: 0.8,
+      className: "point-tooltip",
+    });
+
     circlePoints.value.push(point);
     markers.push(coord);
   }
 
   map.value!.fitBounds((L as typeof Leaflet).latLngBounds(markers));
+}
+
+function drawPolyline(coords: LatLngExpression[]) {
+  if (polylines.value) {
+    map.value?.removeLayer(polylines.value);
+  }
+
+  polylines.value = new (L as typeof Leaflet).Polyline(coords, {
+    color: "#745AC3",
+    weight: 5,
+  }).addTo(map.value!);
 }
 </script>
 
@@ -112,7 +111,8 @@ function drawPolylines(coords: LatLngExpression[], points: number[][]) {
         </button>
       </div>
       <NuxtPage
-        @set-map="(coords, points) => drawPolylines(coords, points)"
+        @set-polyline="(coords) => drawPolyline(coords)"
+        @set-points="(points, destinies) => drawPoints(points, destinies)"
         @set-summary="($event) => (summary = $event)"
       />
     </div>
@@ -175,3 +175,10 @@ function drawPolylines(coords: LatLngExpression[], points: number[][]) {
     </div>
   </div>
 </template>
+
+<style>
+.point-tooltip {
+  background: #f6f6f6;
+  font-family: "Manjari", serif;
+}
+</style>
