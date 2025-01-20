@@ -47,8 +47,23 @@ const routeForm = ref({
 
 const currentDestinies = ref<Destiny[]>([]);
 
+const disabledCalculateRoute = computed(() => {
+  const destiniesFilled = routeForm.value.destinies.filter(
+    (destiny) => destiny.coords?.length
+  );
+
+  if (destiniesFilled.length < 2) {
+    return true;
+  }
+
+  return false;
+});
+
 async function getRoutes() {
-  const coords = routeForm.value.destinies.map((destiny) => destiny.coords);
+  const coords = routeForm.value.destinies
+    .filter((destiny) => destiny.coords.length)
+    .map((destiny) => destiny.coords);
+
   const options = {
     locomotion: routeForm.value.locomotion,
     coordinates: coords,
@@ -88,9 +103,12 @@ async function setCurrentLocation() {
     routeForm.value.destinies[0].coords.join(", ");
 }
 
-const disabledCalculateRoute = computed(() =>
-  routeForm.value.destinies.some((destiny) => !destiny.coords.length)
-);
+function onSelectLocomotion(locomotionId: string) {
+  routeForm.value.locomotion = locomotionId;
+  if (!disabledCalculateRoute.value) {
+    getRoutes();
+  }
+}
 </script>
 
 <template>
@@ -128,7 +146,7 @@ const disabledCalculateRoute = computed(() =>
               '!bg-primary-2 !text-base-0':
                 routeForm.locomotion === locomotion.id,
             }"
-            @click="routeForm.locomotion = locomotion.id"
+            @click="() => onSelectLocomotion(locomotion.id)"
           >
             <font-awesome-icon :icon="locomotion.icon" />
           </button>
@@ -181,7 +199,7 @@ const disabledCalculateRoute = computed(() =>
           </div>
         </div>
         <p v-if="disabledCalculateRoute" class="text-sm mt-1 text-red-600">
-          As coordenadas devem estar preenchidas
+          Pelo menos duas coordenadas devem estar preenchidas
         </p>
 
         <div class="flex justify-between items-center mt-3">
