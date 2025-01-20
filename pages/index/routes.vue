@@ -56,7 +56,7 @@ function onSaveRoute() {
     <p v-if="!routes.length" class="text-base-300/[.7] text-center py-4">
       Nenhuma rota adicionada!
     </p>
-    <AppBtn class="self-end" @click="addNewRoute">
+    <AppBtn class="self-end" @click="() => addNewRoute()">
       <font-awesome-icon icon="fa-solid fa-circle-plus" class="mr-2" />
       Adicionar rota
     </AppBtn>
@@ -77,7 +77,7 @@ function onSaveRoute() {
 
       <AppBtn
         class="w-full"
-        :disabled="!modalRoute.item.name.trim().length"
+        :disabled="!modalRoute.item.name?.trim().length"
         @click="onSaveRoute"
       >
         Salvar
