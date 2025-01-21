@@ -11,7 +11,7 @@ const { shown, onConfirm, title, icon } = storeToRefs(confirmDialogStore());
       :icon="icon ? icon : 'fa-regular fa-hand'"
       class="mb-4 text-2xl"
     />
-    <span class="text-xl mb-4 text-center">
+    <span class="mb-4 text-center">
       {{ title || "Deseja continuar?" }}
     </span>
     <div class="flex gap-3">
@@ -22,8 +22,9 @@ const { shown, onConfirm, title, icon } = storeToRefs(confirmDialogStore());
             shown = false;
           }
         "
-        >Confirmar</AppBtn
       >
+        Confirmar
+      </AppBtn>
     </div>
   </AppModal>
 </template>

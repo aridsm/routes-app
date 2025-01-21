@@ -30,12 +30,12 @@ onClickOutside(button, () => (optionsShown.value = false));
     </button>
     <ul
       v-if="optionsShown"
-      class="absolute right-1 top-100% z-10 bg-base-0 rounded-md options-container"
+      class="absolute right-1 top-100% z-10 bg-base-0 rounded-md options-container overflow-hidden"
     >
       <li
         v-for="option in options"
         :key="option.text"
-        class="py-2 px-4 flex items-center gap-3 hover:bg-base-100"
+        class="py-2 px-4 flex items-center gap-3 hover:bg-base-100 cursor-pointer"
         :class="option.class"
         @click="option.click(props.item as T)"
       >

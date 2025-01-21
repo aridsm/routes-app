@@ -1,17 +1,24 @@
 export const useSavedRoutesStore = defineStore("savedRoutes", () => {
   const routes = ref<Route[]>([]);
+  const lastId = ref(0);
 
-  function saveRoute(route: Route) {
+  function saveRoute(route: Route): Route {
     if (route.id) {
-      const existingRoute = routes.value.find((r) => r.id === route.id);
-      if (existingRoute) {
-        Object.assign(existingRoute, route);
+      let index = routes.value.findIndex((r) => r.id === route.id);
+      if (index >= 0) {
+        routes.value[index] = JSON.parse(JSON.stringify(route));
       }
+      return routes.value[index];
     } else {
-      routes.value.push({
+      const newRoute = {
         ...route,
-        id: Math.random(),
-      });
+        id: lastId.value + 1,
+      };
+      routes.value.push(newRoute);
+
+      ++lastId.value;
+
+      return newRoute;
     }
   }
 
@@ -20,5 +27,9 @@ export const useSavedRoutesStore = defineStore("savedRoutes", () => {
     if (index >= 0) routes.value.splice(index, 1);
   }
 
-  return { routes, saveRoute, deleteRoute };
+  function getRouteById(id: number) {
+    return routes.value.find((route) => route.id === id);
+  }
+
+  return { routes, saveRoute, deleteRoute, getRouteById };
 });

@@ -18,6 +18,13 @@ const modelValue = ref<Destiny>(props.destiny);
 const rgLongitudeLatitude =
   /^(-?([1-8]?\d(\.\d+)?|90(\.0+)?)),\s*(-?((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
 
+watch(
+  () => props.destiny,
+  () => {
+    modelValue.value = props.destiny;
+  }
+);
+
 onMounted(() => {
   window.addEventListener("click", onClickOutside);
 });

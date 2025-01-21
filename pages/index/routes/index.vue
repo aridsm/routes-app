@@ -45,22 +45,26 @@ function onSaveRoute() {
 </script>
 
 <template>
-  <main class="flex-1 min-h-0 overflow-auto flex flex-col gap-3 pb-8 px-6">
-    <ul class="flex flex-col gap-3">
+  <main class="flex-1 min-h-0 overflow-auto flex flex-col gap-3 pb-6">
+    <ul class="flex flex-col gap-3 flex-1 min-h-0 overflow-auto pb-2 px-6">
       <li
         v-for="route in routes"
         :key="route.id"
-        class="bg-base-100 hover:bg-base-200 p-4 rounded-md cursor-pointer flex justify-between items-center"
+        class="bg-base-100 hover:bg-base-200 rounded-md"
       >
-        <span>{{ route.name }}</span>
-
-        <AppOptions :options="options" :item="route" />
+        <NuxtLink
+          :to="`/routes/${route.id}`"
+          class="flex justify-between items-center p-4"
+        >
+          <span>{{ route.name }}</span>
+          <AppOptions :options="options" :item="route" />
+        </NuxtLink>
       </li>
     </ul>
-    <p v-if="!routes.length" class="text-base-300/[.7] text-center py-4">
+    <p v-if="!routes.length" class="text-base-300/[.7] text-center py-4 flex-1">
       Nenhuma rota adicionada!
     </p>
-    <AppBtn class="self-end" @click="() => addNewRoute()">
+    <AppBtn class="self-end mr-6" @click="() => addNewRoute()">
       <font-awesome-icon icon="fa-solid fa-circle-plus" class="mr-2" />
       Adicionar rota
     </AppBtn>
