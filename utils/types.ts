@@ -45,3 +45,9 @@ export interface Route {
   destinies: Destiny[];
   locomotion: locomotion;
 }
+
+export interface ConfirmOptions {
+  title: string;
+  action: () => void;
+  icon?: string;
+}

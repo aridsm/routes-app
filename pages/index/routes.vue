@@ -5,6 +5,7 @@ const modalRoute = ref({
 });
 
 const { routes, saveRoute, deleteRoute } = useSavedRoutesStore();
+const { confirm } = confirmDialogStore();
 
 const options = [
   {
@@ -20,7 +21,10 @@ const options = [
     icon: "fa-regular fa-trash-can",
     class: "text-red-600",
     click: (item: Route) => {
-      deleteRoute(item.id!);
+      confirm({
+        action: () => deleteRoute(item.id!),
+        title: "Deseja excluir o item selecionado?",
+      });
     },
   },
 ];
