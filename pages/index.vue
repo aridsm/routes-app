@@ -2,7 +2,7 @@
 import type { CircleMarker, LatLngExpression, Layer, Map } from "leaflet";
 import type Leaflet from "leaflet";
 
-const L = inject("L");
+const L = inject<typeof Leaflet>("L")!;
 
 const activeTab = ref("navigate");
 
@@ -24,19 +24,19 @@ async function loadMap() {
     latitude: number;
   } = await getUserPosition();
 
-  map.value = (L as typeof Leaflet)
-    .map("map")
-    .setView([coords.latitude, coords.longitude], 13);
+  map.value = L.map("map").setView([coords.latitude, coords.longitude], 13);
+
+  map.value?.on("dragend", () => {
+    map.value?.fitBounds(map.value.getBounds());
+  });
 
   map.value?.on("click", (e) => {});
 
-  (L as typeof Leaflet)
-    .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    })
-    .addTo(map.value);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map.value);
 }
 
 const tabs = [
@@ -64,12 +64,10 @@ function drawPoints(points: number[][], destinies: Destiny[]) {
       lat: points[i][1],
       lng: points[i][0],
     };
-    const point = (L as typeof Leaflet)
-      .circleMarker(coord, {
-        radius: 15,
-        color: "#4CC285",
-      })
-      .addTo(map.value!);
+    const point = L.circleMarker(coord, {
+      radius: 15,
+      color: "#4CC285",
+    }).addTo(map.value!);
 
     point.bindTooltip(destinies[i].value, {
       permanent: false,
@@ -82,7 +80,7 @@ function drawPoints(points: number[][], destinies: Destiny[]) {
     markers.push(coord);
   }
 
-  map.value!.fitBounds((L as typeof Leaflet).latLngBounds(markers));
+  map.value!.fitBounds(L.latLngBounds(markers));
 }
 
 function drawPolyline(coords: LatLngExpression[]) {
@@ -90,7 +88,7 @@ function drawPolyline(coords: LatLngExpression[]) {
     map.value?.removeLayer(polylines.value);
   }
 
-  polylines.value = new (L as typeof Leaflet).Polyline(coords, {
+  polylines.value = new L.Polyline(coords, {
     color: "#745AC3",
     weight: 5,
   }).addTo(map.value!);

@@ -116,9 +116,24 @@ async function getRoutes() {
 
 async function setCurrentLocation() {
   const pos: any = await getUserPosition();
-  routeForm.value.destinies[0].coords = [pos.longitude, pos.latitude];
-  routeForm.value.destinies[0].value =
-    routeForm.value.destinies[0].coords.join(", ");
+
+  let firstBlankField = routeForm.value.destinies.find(
+    (destiny) => !destiny.value.trim()
+  );
+
+  if (!firstBlankField && routeForm.value.destinies.length < 6) {
+    routeForm.value.destinies.push({
+      id: Math.random(),
+      value: "",
+      coords: [],
+    });
+    firstBlankField = routeForm.value.destinies.at(-1);
+  }
+
+  if (firstBlankField) {
+    firstBlankField.coords = [pos.longitude, pos.latitude];
+    firstBlankField.value = firstBlankField.coords.join(", ");
+  }
 }
 
 function onSelectLocomotion(locomotionId: locomotion) {
