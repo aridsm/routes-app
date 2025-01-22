@@ -3,6 +3,12 @@ const route = useRoute();
 const { getRouteById } = useSavedRoutesStore();
 const routeItem = ref<Route>();
 
+const emits = defineEmits<{
+  (name: "set-polyline", polyline: any): void;
+  (name: "set-points", points: any, destinies: Destiny[]): void;
+  (name: "set-summary", summary: Summary): void;
+}>();
+
 onMounted(() => {
   routeItem.value = getRouteById(Number(route.params.id));
 });
@@ -14,6 +20,11 @@ onMounted(() => {
       v-if="routeItem"
       :item="routeItem"
       @set-item="routeItem = $event"
+      @set-polyline="emits('set-polyline', $event)"
+      @set-points="
+        (points, destinies) => emits('set-points', points, destinies)
+      "
+      @set-summary="emits('set-summary', $event)"
     />
   </main>
 </template>
