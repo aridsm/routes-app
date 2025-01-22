@@ -72,7 +72,7 @@ function addNewRoute() {
     <p v-if="!routes.length" class="text-base-300/[.7] text-center py-4 flex-1">
       Nenhuma rota adicionada!
     </p>
-    <AppBtn class="self-end mr-6" @click="() => addNewRoute()">
+    <AppBtn class="mx-6" @click="() => addNewRoute()">
       <font-awesome-icon icon="fa-solid fa-circle-plus" class="mr-2" />
       Adicionar rota
     </AppBtn>

@@ -21,6 +21,7 @@ const currentDestinies = ref<Destiny[]>([]);
 const { deleteRoute, saveRoute } = useSavedRoutesStore();
 const { confirm } = confirmDialogStore();
 const { addNotification } = useNotificationStore();
+const loading = ref(false);
 
 const modalRoute = ref({
   open: false,
@@ -66,6 +67,9 @@ const routeForm = ref<Route>({
 onMounted(() => {
   if (props.item) {
     routeForm.value = JSON.parse(JSON.stringify(props.item));
+    if (!disabledCalculateRoute.value) {
+      getRoutes();
+    }
   }
 });
 
@@ -82,6 +86,9 @@ const disabledCalculateRoute = computed(() => {
 });
 
 async function getRoutes() {
+  currentDestinies.value = [];
+  segments.value = [];
+
   const coords = routeForm.value.destinies
     .filter((destiny) => destiny.coords.length)
     .map((destiny) => destiny.coords);
@@ -91,6 +98,7 @@ async function getRoutes() {
     coordinates: coords,
   };
 
+  loading.value = true;
   await fetchRoutes(options as any)
     .then((response) => response.json())
     .then((data) => {
@@ -99,17 +107,18 @@ async function getRoutes() {
         return (L as typeof Leaflet).latLng(coordinate[1], coordinate[0]);
       });
 
-      emits("set-polyline", polyline);
-      emits("set-summary", features.properties.summary);
-      emits("set-points", coords, routeForm.value.destinies);
-
       segments.value = features.properties.segments;
       currentDestinies.value = JSON.parse(
         JSON.stringify(
           routeForm.value.destinies.filter((destiny) => destiny.coords?.length)
         )
       );
+      emits("set-polyline", polyline);
+      emits("set-summary", features.properties.summary);
+      emits("set-points", coords, routeForm.value.destinies);
     });
+
+  loading.value = false;
 }
 
 async function setCurrentLocation() {
@@ -201,7 +210,7 @@ function setItem(item: Route) {
 const hasChanges = ref(false);
 
 watch(
-  () => [routeForm.value],
+  () => [routeForm.value, props.item],
   () => {
     if (props.item) {
       hasChanges.value = objectsAreDifferent(props.item, routeForm.value);
@@ -214,7 +223,7 @@ watch(
 onBeforeRouteLeave(() => {
   if (hasChanges.value) {
     const answer = window.confirm(
-      "Do you really want to leave? you have unsaved changes11!"
+      "Há mudanças não salvas. Deseja sair da página atual?"
     );
     if (!answer) return false;
   }
@@ -319,6 +328,7 @@ onBeforeRouteLeave(() => {
         </AppBtn>
       </div>
     </section>
+    <AppLoading v-if="loading" class="flex-1" />
     <section v-if="segments && currentDestinies.length" class="px-6">
       <h2 class="font-bold tracking-wide mb-2">Como chegar</h2>
       <ul
@@ -379,21 +389,19 @@ onBeforeRouteLeave(() => {
       </ul>
     </section>
   </div>
-  <div v-if="props.item" class="flex h-12 w-full">
-    <button
-      class="w-14 bg-primary-3 text-base-0 flex items-center justify-center disabled:opacity-65 disabled:cursor-not-allowed"
+  <div v-if="props.item" class="flex w-full p-6 gap-2">
+    <AppBtn
+      icon
+      class="!w-14 !h-full !bg-primary-2"
       :disabled="!hasChanges"
       @click="assignLastRouteData"
+      title="Restaurar modificações"
     >
       <font-awesome-icon icon="fa-solid fa-arrow-rotate-left" />
-    </button>
-    <button
-      class="bg-primary-2 hover:bg-primary-3 text-base-0 flex-1 pt-1 disabled:opacity-65 disabled:cursor-not-allowed"
-      :disabled="!hasChanges"
-      @click="onSaveRoute"
-    >
+    </AppBtn>
+    <AppBtn class="w-full" :disabled="!hasChanges" @click="onSaveRoute">
       Salvar alterações
-    </button>
+    </AppBtn>
   </div>
 
   <AppModalRoute
