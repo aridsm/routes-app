@@ -4,6 +4,7 @@ const emits = defineEmits<{
 }>();
 
 const { saveRoute } = useSavedRoutesStore();
+const { addNotification } = useNotificationStore();
 
 const modelValue = defineModel<{ item: Route; open: boolean }>({
   required: true,
@@ -13,6 +14,12 @@ function onSaveRoute() {
   const newItem = saveRoute(modelValue.value.item);
   modelValue.value.open = false;
   emits("set-item", newItem);
+
+  if (modelValue.value.item.id) {
+    addNotification(`Rota "${newItem.name}" atualizada com sucesso!`);
+  } else {
+    addNotification(`Rota "${newItem.name}" criada com sucesso!`);
+  }
 }
 </script>
 

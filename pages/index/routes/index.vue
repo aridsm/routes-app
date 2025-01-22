@@ -6,6 +6,7 @@ const modalRoute = ref({
 
 const { routes, deleteRoute } = useSavedRoutesStore();
 const { confirm } = confirmDialogStore();
+const { addNotification } = useNotificationStore();
 
 const options = [
   {
@@ -22,7 +23,11 @@ const options = [
     class: "text-red-600",
     click: (item: Route) => {
       confirm({
-        action: () => deleteRoute(item.id!),
+        action: () => {
+          deleteRoute(item.id!);
+
+          addNotification(`A rota "${item.name}" foi excluída com sucesso!`);
+        },
         title: "Deseja excluir o item selecionado?",
       });
     },
@@ -45,15 +50,12 @@ function addNewRoute() {
       <li
         v-for="route in routes"
         :key="route.id"
-        class="bg-base-100 hover:bg-base-200 rounded-md"
+        class="bg-base-100 hover:bg-base-200 rounded-md flex justify-between items-center pr-4"
       >
-        <NuxtLink
-          :to="`/routes/${route.id}`"
-          class="flex justify-between items-center p-4"
-        >
-          <span>{{ route.name }}</span>
-          <AppOptions :options="options" :item="route" />
+        <NuxtLink :to="`/routes/${route.id}`" class="p-4 flex-1">
+          {{ route.name }}
         </NuxtLink>
+        <AppOptions @click.stop :options="options" :item="route" />
       </li>
     </ul>
     <p v-if="!routes.length" class="text-base-300/[.7] text-center py-4 flex-1">

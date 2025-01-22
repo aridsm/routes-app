@@ -20,6 +20,7 @@ const segments = ref<Segment[]>();
 const currentDestinies = ref<Destiny[]>([]);
 const { deleteRoute, saveRoute } = useSavedRoutesStore();
 const { confirm } = confirmDialogStore();
+const { addNotification } = useNotificationStore();
 
 const modalRoute = ref({
   open: false,
@@ -161,6 +162,8 @@ const options = [
         action: () => {
           deleteRoute(item.id!);
           router.push("/routes");
+
+          addNotification(`A rota "${item.name}" foi excluída com sucesso!`);
         },
         title: "Deseja excluir o item selecionado?",
       });
@@ -173,6 +176,10 @@ function onSaveRoute() {
     action: () => {
       const routeItem = saveRoute(routeForm.value);
       setItem(routeItem);
+
+      addNotification(
+        `A rota "${routeForm.value.name}" foi atualizada com sucesso!`
+      );
     },
     title: "Deseja salvar as alterações?",
   });
@@ -182,6 +189,9 @@ function assignLastRouteData() {
   confirm({
     action: () => {
       routeForm.value = JSON.parse(JSON.stringify(props.item));
+      addNotification(
+        `A rota "${routeForm.value.name}" foi restaurada para a versão anterior!`
+      );
     },
     title: "Deseja desfazer as alterações?",
   });
