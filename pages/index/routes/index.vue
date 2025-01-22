@@ -4,7 +4,7 @@ const modalRoute = ref({
   item: {} as Route,
 });
 
-const { routes, saveRoute, deleteRoute } = useSavedRoutesStore();
+const { routes, deleteRoute } = useSavedRoutesStore();
 const { confirm } = confirmDialogStore();
 
 const options = [
@@ -37,11 +37,6 @@ function addNewRoute() {
     locomotion: "driving-car",
   };
 }
-
-function onSaveRoute() {
-  saveRoute(modalRoute.value.item);
-  modalRoute.value.open = false;
-}
 </script>
 
 <template>
@@ -69,28 +64,7 @@ function onSaveRoute() {
       Adicionar rota
     </AppBtn>
 
-    <AppModal
-      v-model="modalRoute.open"
-      content-class="flex flex-col gap-3 w-[25rem]"
-    >
-      <span class="text-xl text-center">{{
-        modalRoute.item.id ? "Editar rota" : "Criar rota"
-      }}</span>
-
-      <AppInputText
-        v-model="modalRoute.item.name"
-        placeholder="Digite..."
-        label="Nome da rota"
-      />
-
-      <AppBtn
-        class="w-full"
-        :disabled="!modalRoute.item.name?.trim().length"
-        @click="onSaveRoute"
-      >
-        Salvar
-      </AppBtn>
-    </AppModal>
+    <AppModalRoute v-model="modalRoute" />
   </main>
 </template>
 

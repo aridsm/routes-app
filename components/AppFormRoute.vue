@@ -21,6 +21,11 @@ const currentDestinies = ref<Destiny[]>([]);
 const { deleteRoute, saveRoute } = useSavedRoutesStore();
 const { confirm } = confirmDialogStore();
 
+const modalRoute = ref({
+  open: false,
+  item: {} as Route,
+});
+
 const locomotions: { id: locomotion; text: string; icon: string }[] = [
   {
     id: "driving-car",
@@ -124,21 +129,24 @@ function onSelectLocomotion(locomotionId: locomotion) {
 }
 
 const options = [
-  //   {
-  //     text: "Editar",
-  //     icon: "fa-regular fa-pen-to-square",
-  //     click: (item: Route) => {
-  //       modalRoute.value.open = true;
-  //       modalRoute.value.item = { ...item };
-  //     },
-  //   },
+  {
+    text: "Editar",
+    icon: "fa-regular fa-pen-to-square",
+    click: (item: Route) => {
+      modalRoute.value.open = true;
+      modalRoute.value.item = { ...item };
+    },
+  },
   {
     text: "Excluir",
     icon: "fa-regular fa-trash-can",
     class: "text-red-600",
     click: (item: Route) => {
       confirm({
-        action: () => deleteRoute(item.id!),
+        action: () => {
+          deleteRoute(item.id!);
+          router.push("/routes");
+        },
         title: "Deseja excluir o item selecionado?",
       });
     },
@@ -149,7 +157,7 @@ function onSaveRoute() {
   confirm({
     action: () => {
       const routeItem = saveRoute(routeForm.value);
-      emits("set-item", routeItem);
+      setItem(routeItem);
     },
     title: "Deseja salvar as alterações?",
   });
@@ -162,6 +170,10 @@ function assignLastRouteData() {
     },
     title: "Deseja desfazer as alterações?",
   });
+}
+
+function setItem(item: Route) {
+  emits("set-item", item);
 }
 </script>
 
@@ -337,6 +349,8 @@ function assignLastRouteData() {
       Salvar alterações
     </button>
   </div>
+
+  <AppModalRoute v-model="modalRoute" @set-item="setItem" />
 </template>
 
 <style scoped>
