@@ -14,11 +14,11 @@ const props = defineProps({
 });
 
 const emits = defineEmits<{
-  (name: "debounce", value: string): void;
+  (name: "debounce", value: string | undefined): void;
 }>();
 
-const modelValue = defineModel<string>({ required: true });
-const lazyValue = ref<string>(modelValue.value);
+const modelValue = defineModel<string | undefined>({ required: true });
+const lazyValue = ref<string | undefined>(modelValue.value);
 const timeOut = ref();
 
 watch(

@@ -44,7 +44,9 @@ function onClickOutside(event: MouseEvent) {
   }
 }
 
-async function onUpdateDestiny(value: string) {
+async function onUpdateDestiny(value: string | undefined) {
+  if (!value) return;
+
   modelValue.value.coords = [];
   if (!value.trim().length) {
     return;

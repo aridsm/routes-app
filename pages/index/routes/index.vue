@@ -38,7 +38,18 @@ function addNewRoute() {
   modalRoute.value.open = true;
   modalRoute.value.item = {
     name: "",
-    destinies: [],
+    destinies: [
+      {
+        id: 1,
+        value: "",
+        coords: [],
+      },
+      {
+        id: 2,
+        value: "",
+        coords: [],
+      },
+    ],
     locomotion: "driving-car",
   };
 }

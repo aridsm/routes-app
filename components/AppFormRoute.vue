@@ -49,26 +49,23 @@ const routeForm = ref<Route>({
   id: 0,
   name: "",
   locomotion: "driving-car" as locomotion,
-  destinies: [] as Destiny[],
+  destinies: [
+    {
+      id: 1,
+      value: "",
+      coords: [],
+    },
+    {
+      id: 2,
+      value: "",
+      coords: [],
+    },
+  ] as Destiny[],
 });
 
 onMounted(() => {
   if (props.item) {
     routeForm.value = JSON.parse(JSON.stringify(props.item));
-  }
-  if (!routeForm.value.destinies.length) {
-    routeForm.value.destinies = [
-      {
-        id: 1,
-        value: "",
-        coords: [],
-      },
-      {
-        id: 2,
-        value: "",
-        coords: [],
-      },
-    ];
   }
 });
 
@@ -200,6 +197,28 @@ function assignLastRouteData() {
 function setItem(item: Route) {
   emits("set-item", item);
 }
+
+const hasChanges = ref(false);
+
+watch(
+  () => [routeForm.value],
+  () => {
+    if (props.item) {
+      hasChanges.value = objectsAreDifferent(props.item, routeForm.value);
+    }
+  },
+  {
+    deep: true,
+  }
+);
+onBeforeRouteLeave(() => {
+  if (hasChanges.value) {
+    const answer = window.confirm(
+      "Do you really want to leave? you have unsaved changes11!"
+    );
+    if (!answer) return false;
+  }
+});
 </script>
 
 <template>
@@ -362,20 +381,30 @@ function setItem(item: Route) {
   </div>
   <div v-if="props.item" class="flex h-12 w-full">
     <button
-      class="w-14 bg-primary-3 text-base-0 flex items-center justify-center"
+      class="w-14 bg-primary-3 text-base-0 flex items-center justify-center disabled:opacity-65 disabled:cursor-not-allowed"
+      :disabled="!hasChanges"
       @click="assignLastRouteData"
     >
       <font-awesome-icon icon="fa-solid fa-arrow-rotate-left" />
     </button>
     <button
-      class="bg-primary-2 hover:bg-primary-3 text-base-0 flex-1 pt-1"
+      class="bg-primary-2 hover:bg-primary-3 text-base-0 flex-1 pt-1 disabled:opacity-65 disabled:cursor-not-allowed"
+      :disabled="!hasChanges"
       @click="onSaveRoute"
     >
       Salvar alterações
     </button>
   </div>
 
-  <AppModalRoute v-model="modalRoute" @set-item="setItem" />
+  <AppModalRoute
+    v-model="modalRoute"
+    @set-item="
+      ($event) => {
+        setItem($event);
+        routeForm.name = $event.name;
+      }
+    "
+  />
 </template>
 
 <style scoped>
