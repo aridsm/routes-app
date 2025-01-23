@@ -39,7 +39,7 @@ onMounted(() => {
     <button
       v-for="tab in tabs"
       :key="tab.id"
-      class="rounded-full px-8 h-7 pt-[2px] hover:bg-base-100 transition"
+      class="rounded-full px-8 h-7 pt-1 hover:bg-base-100 transition"
       :class="{
         'bg-primary-1 text-base-0 hover:!bg-primary-1 ': activeTab === tab.id,
       }"

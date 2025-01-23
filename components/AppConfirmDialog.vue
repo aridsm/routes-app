@@ -1,5 +1,6 @@
 <script lang="tsx" setup>
 const { shown, onConfirm, title, icon } = storeToRefs(confirmDialogStore());
+const { t } = useI18n();
 </script>
 
 <template>
@@ -12,7 +13,7 @@ const { shown, onConfirm, title, icon } = storeToRefs(confirmDialogStore());
       class="mb-4 text-2xl"
     />
     <span class="mb-4 text-center">
-      {{ title || "Deseja continuar?" }}
+      {{ title || t("labels.continue") }}
     </span>
     <div class="flex gap-3">
       <AppBtn
@@ -23,7 +24,7 @@ const { shown, onConfirm, title, icon } = storeToRefs(confirmDialogStore());
           }
         "
       >
-        Confirmar
+        {{ t("labels.confirm") }}
       </AppBtn>
     </div>
   </AppModal>

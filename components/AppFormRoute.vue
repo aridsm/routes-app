@@ -22,29 +22,41 @@ const { deleteRoute, saveRoute } = useSavedRoutesStore();
 const { confirm } = confirmDialogStore();
 const { addNotification } = useNotificationStore();
 const loading = ref(false);
+const { t, locale } = useI18n();
+
+watch(
+  () => locale.value,
+  () => {
+    if (!disabledCalculateRoute.value) {
+      getRoutes();
+    }
+  }
+);
 
 const modalRoute = ref({
   open: false,
   item: {} as Route,
 });
 
-const locomotions: { id: locomotion; text: string; icon: string }[] = [
-  {
-    id: "driving-car",
-    text: "Carro",
-    icon: "fa-solid fa-car",
-  },
-  {
-    id: "cycling-regular",
-    text: "Bicicleta",
-    icon: "fa-solid fa-bicycle",
-  },
-  {
-    id: "foot-walking",
-    text: "A pé",
-    icon: "fa-solid fa-person-walking",
-  },
-];
+const locomotions = computed<{ id: locomotion; text: string; icon: string }[]>(
+  () => [
+    {
+      id: "driving-car",
+      text: t("labels.car"),
+      icon: "fa-solid fa-car",
+    },
+    {
+      id: "cycling-regular",
+      text: t("labels.bicycle"),
+      icon: "fa-solid fa-bicycle",
+    },
+    {
+      id: "foot-walking",
+      text: t("labels.afoot"),
+      icon: "fa-solid fa-person-walking",
+    },
+  ]
+);
 
 const routeForm = ref<Route>({
   id: 0,
@@ -96,6 +108,7 @@ async function getRoutes() {
   const options = {
     locomotion: routeForm.value.locomotion,
     coordinates: coords,
+    language: locale.value,
   };
 
   loading.value = true;
@@ -116,9 +129,10 @@ async function getRoutes() {
       emits("set-polyline", polyline);
       emits("set-summary", features.properties.summary);
       emits("set-points", coords, routeForm.value.destinies);
+    })
+    .finally(() => {
+      loading.value = false;
     });
-
-  loading.value = false;
 }
 
 async function setCurrentLocation() {
@@ -150,9 +164,9 @@ function onSelectLocomotion(locomotionId: locomotion) {
   }
 }
 
-const options = [
+const options = computed(() => [
   {
-    text: "Editar",
+    text: t("buttons.edit"),
     icon: "fa-regular fa-pen-to-square",
     click: (item: Route) => {
       modalRoute.value.open = true;
@@ -160,7 +174,7 @@ const options = [
     },
   },
   {
-    text: "Excluir",
+    text: t("buttons.delete"),
     icon: "fa-regular fa-trash-can",
     class: "text-red-600",
     click: (item: Route) => {
@@ -169,13 +183,13 @@ const options = [
           deleteRoute(item.id!);
           router.push("/routes");
 
-          addNotification(`A rota "${item.name}" foi excluída com sucesso!`);
+          addNotification(t("labels.routeWasDeleted", { obj: item.name }));
         },
-        title: "Deseja excluir o item selecionado?",
+        title: t("labels.wantToDeleteItem"),
       });
     },
   },
-];
+]);
 
 function onSaveRoute() {
   confirm({
@@ -184,10 +198,10 @@ function onSaveRoute() {
       setItem(routeItem);
 
       addNotification(
-        `A rota "${routeForm.value.name}" foi atualizada com sucesso!`
+        t("labels.routeWasUpdated", { obj: routeForm.value.name })
       );
     },
-    title: "Deseja salvar as alterações?",
+    title: t("labels.saveChanges"),
   });
 }
 
@@ -196,10 +210,13 @@ function assignLastRouteData() {
     action: () => {
       routeForm.value = JSON.parse(JSON.stringify(props.item));
       addNotification(
-        `A rota "${routeForm.value.name}" foi restaurada para a versão anterior!`
+        t("labels.routeWasRestored", { obj: routeForm.value.name })
       );
+      if (!disabledCalculateRoute.value) {
+        getRoutes();
+      }
     },
-    title: "Deseja desfazer as alterações?",
+    title: t("labels.undoChanges"),
   });
 }
 
@@ -222,9 +239,7 @@ watch(
 );
 onBeforeRouteLeave(() => {
   if (hasChanges.value) {
-    const answer = window.confirm(
-      "Há mudanças não salvas. Deseja sair da página atual?"
-    );
+    const answer = window.confirm(t("labels.confirmExit"));
     if (!answer) return false;
   }
 });
@@ -235,7 +250,11 @@ onBeforeRouteLeave(() => {
     <div
       class="bg-primary-1/[.1] h-8 mb-4 rounded-full leading-none pr-6 pl-2 text-primary-1 text-sm gap-3 flex items-center"
     >
-      <button title="Voltar" class="flex" @click="router.push(`/routes`)">
+      <button
+        :title="t('buttons.back')"
+        class="flex"
+        @click="router.push(`/routes`)"
+      >
         <font-awesome-icon
           icon="fa-solid fa-circle-chevron-left"
           class="text-xl"
@@ -247,7 +266,9 @@ onBeforeRouteLeave(() => {
   </div>
   <div class="flex-1 overflow-auto flex flex-col gap-8 pb-8">
     <section class="px-6">
-      <h2 class="font-bold tracking-wide mb-2">Meio de locomoção</h2>
+      <h2 class="font-bold tracking-wide mb-2">
+        {{ t("labels.meansOfLocomotion") }}
+      </h2>
 
       <div class="flex gap-3 w-full">
         <button
@@ -267,7 +288,7 @@ onBeforeRouteLeave(() => {
 
     <section class="px-6">
       <div class="flex justify-between mb-2 items-center">
-        <h2 class="font-bold tracking-wide">Rota</h2>
+        <h2 class="font-bold tracking-wide">{{ t("labels.routes") }}</h2>
         <AppBtn
           @click="
             () =>
@@ -280,7 +301,7 @@ onBeforeRouteLeave(() => {
           icon
           transparent
           :disabled="routeForm.destinies.length > 5"
-          title="Adicionar destino"
+          :title="t('labels.addDestination')"
         >
           <font-awesome-icon
             icon="fa-solid fa-circle-plus"
@@ -303,7 +324,7 @@ onBeforeRouteLeave(() => {
           <button
             v-if="index >= 2"
             class="w-9 h-9 rounded-full hover:bg-base-100 flex items-center justify-center"
-            title="excluir"
+            :title="t('buttons.delete')"
             @click="routeForm.destinies.splice(index, 1)"
           >
             <font-awesome-icon icon="fa-regular fa-trash-can" />
@@ -311,7 +332,7 @@ onBeforeRouteLeave(() => {
         </div>
       </div>
       <p v-if="disabledCalculateRoute" class="text-sm mt-1 text-red-600">
-        Pelo menos duas coordenadas devem estar preenchidas
+        {{ t("labels.atLeastTwo") }}
       </p>
 
       <div class="flex justify-between items-center mt-3">
@@ -320,17 +341,19 @@ onBeforeRouteLeave(() => {
           @click="() => setCurrentLocation()"
         >
           <font-awesome-icon icon="fa-solid fa-map-pin" />
-          Usar localização atual
+          {{ t("labels.useCurrentLocation") }}
         </button>
         <AppBtn @click="() => getRoutes()" :disabled="disabledCalculateRoute">
           <font-awesome-icon icon="fa-solid fa-signs-post" class="mr-2" />
-          Calcular percurso
+          {{ t("labels.calculateRoute") }}
         </AppBtn>
       </div>
     </section>
     <AppLoading v-if="loading" class="flex-1" />
     <section v-if="segments && currentDestinies.length" class="px-6">
-      <h2 class="font-bold tracking-wide mb-2">Como chegar</h2>
+      <h2 class="font-bold tracking-wide mb-2">
+        {{ t("labels.howToGetThere") }}
+      </h2>
       <ul
         v-for="(segment, index) in segments"
         :key="segment.distance"
@@ -346,7 +369,7 @@ onBeforeRouteLeave(() => {
           >
             <div class="w-full text-start flex flex-col gap-1">
               <span class="text-sm block opacity-80">
-                Trecho {{ index + 1 }}
+                {{ t("labels.path") }} {{ index + 1 }}
               </span>
               <div class="flex gap-4 items-center font-bold">
                 <p>{{ currentDestinies[index].value }}</p>
@@ -392,15 +415,15 @@ onBeforeRouteLeave(() => {
   <div v-if="props.item" class="flex w-full p-6 gap-2">
     <AppBtn
       icon
-      class="!w-14 !h-full !bg-primary-2"
+      class="!w-14 !min-w-14 !h-full !bg-primary-2"
       :disabled="!hasChanges"
       @click="assignLastRouteData"
-      title="Restaurar modificações"
+      :title="t('buttons.restore')"
     >
       <font-awesome-icon icon="fa-solid fa-arrow-rotate-left" />
     </AppBtn>
     <AppBtn class="w-full" :disabled="!hasChanges" @click="onSaveRoute">
-      Salvar alterações
+      {{ t("buttons.save") }}
     </AppBtn>
   </div>
 

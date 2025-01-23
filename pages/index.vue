@@ -9,6 +9,7 @@ const activeTab = ref("navigate");
 const windowLoaded = computed(() => typeof window !== "undefined");
 
 const map = ref<Map>();
+const { setLocale, locale, t } = useI18n();
 
 const polylines = ref<Layer>();
 const circlePoints = ref<CircleMarker[]>([]);
@@ -39,18 +40,18 @@ async function loadMap() {
   }).addTo(map.value);
 }
 
-const tabs = [
+const tabs = computed(() => [
   {
     id: "navigate",
-    text: "Navegar",
+    text: t("tabs.navigate"),
     route: "/",
   },
   {
     id: "routes",
-    text: "Suas rotas",
+    text: t("tabs.savedRoutes"),
     route: "/routes",
   },
-];
+]);
 
 function drawPoints(points: number[][], destinies: Destiny[]) {
   circlePoints.value?.forEach((point: any) => {
@@ -93,6 +94,21 @@ function drawPolyline(coords: LatLngExpression[]) {
     weight: 5,
   }).addTo(map.value!);
 }
+
+const options = [
+  {
+    text: "Português",
+    click: () => {
+      setLocale("pt");
+    },
+  },
+  {
+    text: "English",
+    click: () => {
+      setLocale("en");
+    },
+  },
+];
 </script>
 
 <template>
@@ -100,13 +116,15 @@ function drawPolyline(coords: LatLngExpression[]) {
     <div class="w-[33rem] flex flex-col">
       <div class="p-6 flex justify-between items-center">
         <AppTabs v-model="activeTab" :tabs="tabs" />
-        <button class="flex items-center gap-2">
-          pt-BR
-          <font-awesome-icon
-            icon="fa-solid fa-language"
-            class="ml-1 -mt-1 text-xl"
-          />
-        </button>
+        <AppOptions :options="options" v-slot="{ open }">
+          <button class="flex items-center gap-2" @click="open">
+            {{ locale === "pt" ? "pt-BR" : "en-US" }}
+            <font-awesome-icon
+              icon="fa-solid fa-language"
+              class="ml-1 -mt-1 text-xl"
+            />
+          </button>
+        </AppOptions>
       </div>
       <NuxtPage
         @set-polyline="(coords) => drawPolyline(coords)"
@@ -117,54 +135,54 @@ function drawPolyline(coords: LatLngExpression[]) {
     <div class="bg-base-300 flex-1 text-base-0 flex flex-col">
       <header class="bg-primary-2 h-16 flex">
         <h1
-          class="bg-primary-3 px-12 text-xl tracking-wider font-bold flex items-center"
+          class="bg-primary-3 px-12 pt-1 text-xl tracking-wider font-bold flex items-center"
         >
           LOGO
         </h1>
-        <div class="px-8 flex items-center w-full">
-          <p v-if="!polylines">
-            Insira pelo menos duas localizações para calcular o percurso
+        <div class="px-8 flex items-center w-full justify-between">
+          <p v-if="!polylines" class="mr-auto flex-1">
+            {{ t("header.insert") }}
           </p>
-          <div
-            v-if="summary"
-            class="flex gap-4 items-center justify-between flex-1"
-          >
-            <div class="flex gap-4">
-              <div class="flex gap-3">
-                <font-awesome-icon icon="fa-solid fa-car-side" />
-                {{ convertMetersToKm(summary?.distance) }} km
-              </div>
-              |
-              <div class="flex gap-3">
-                <font-awesome-icon icon="fa-regular fa-clock" />
-                {{ convertTime(summary?.duration) }}
-              </div>
-            </div>
 
-            <div class="flex gap-1 items-center">
-              <a
-                href="https://leafletjs.com/"
-                target="_blank"
-                class="hover:bg-primary-3 rounded-full pt-1 px-6 transition"
-              >
-                Leaflet
-              </a>
-              <a
-                href="https://openrouteservice.org/"
-                target="_blank"
-                class="hover:bg-primary-3 rounded-full pt-1 px-6 transition"
-              >
-                OpenRouteService
-              </a>
-              <a
-                href="https://github.com/aridsm"
-                target="_blank"
-                class="p-1 mt-1 text-xl ml-2"
-                title="Meu GitHub"
-              >
-                <font-awesome-icon icon="fa-brands fa-github" />
-              </a>
+          <div v-if="summary" class="flex gap-4 items-center">
+            <div class="flex gap-3 items-center">
+              <font-awesome-icon icon="fa-solid fa-car-side" />
+              <span class="pt-1">
+                {{ convertMetersToKm(summary?.distance) }} km
+              </span>
             </div>
+            <div class="w-[2px] h-6 bg-primary-3" />
+            <div class="flex gap-3 items-center">
+              <font-awesome-icon icon="fa-regular fa-clock" />
+              <span class="pt-1">
+                {{ convertTime(summary?.duration) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex items-center">
+            <a
+              href="https://leafletjs.com/"
+              target="_blank"
+              class="hover:bg-primary-3 rounded-full pt-1 px-6 transition"
+            >
+              Leaflet
+            </a>
+            <a
+              href="https://openrouteservice.org/"
+              target="_blank"
+              class="hover:bg-primary-3 rounded-full pt-1 px-6 transition"
+            >
+              OpenRouteService
+            </a>
+            <a
+              href="https://github.com/aridsm"
+              target="_blank"
+              class="p-1 mt-1 text-xl ml-2"
+              :title="t('labels.myGithub')"
+            >
+              <font-awesome-icon icon="fa-brands fa-github" />
+            </a>
           </div>
         </div>
       </header>

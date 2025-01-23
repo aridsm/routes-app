@@ -8,26 +8,33 @@ const props = defineProps({
   },
   item: {
     type: Object as PropType<T>,
-    required: true,
   },
 });
 
 const optionsShown = ref(false);
-const button = ref<HTMLButtonElement>();
+const activator = ref<HTMLButtonElement>();
+const { t } = useI18n();
 
-onClickOutside(button, () => (optionsShown.value = false));
+onClickOutside(activator, () => (optionsShown.value = false));
+
+function openOptions() {
+  optionsShown.value = true;
+}
 </script>
 
 <template>
   <div class="relative">
-    <button
-      ref="button"
-      class="w-9 h-9 rounded-full hover:bg-base-100 flex items-center justify-center"
-      title="Opções"
-      @click="optionsShown = true"
-    >
-      <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
-    </button>
+    <div ref="activator">
+      <slot :open="openOptions">
+        <button
+          class="w-9 h-9 rounded-full hover:bg-base-100 flex items-center justify-center"
+          :title="t('labels.options')"
+          @click="openOptions"
+        >
+          <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
+        </button>
+      </slot>
+    </div>
     <ul
       v-if="optionsShown"
       class="absolute right-1 top-100% z-10 bg-base-0 rounded-md options-container overflow-hidden"

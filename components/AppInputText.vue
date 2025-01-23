@@ -1,8 +1,8 @@
 <script lang="tsx" setup>
+const { t } = useI18n();
+
 const props = defineProps({
-  placeholder: {
-    default: "Digite...",
-  },
+  placeholder: String,
   icon: String,
   drag: Boolean,
   lazy: Boolean,
@@ -72,7 +72,7 @@ function onBlur() {
       <input
         type="text"
         v-model="lazyValue"
-        :placeholder="placeholder"
+        :placeholder="placeholder || t('labels.enterAValue')"
         class="bg-transparent w-full h-11 px-4 pt-1 placeholder:text-base-300/[.35] rounded-md outline-offset-1 focus:outline-purple-500"
         :class="{
           'pl-10': icon && !drag,

@@ -17,7 +17,7 @@ export async function fetchRoutes(options: Options): Promise<any> {
       },
       body: JSON.stringify({
         coordinates: options.coordinates,
-        language: options.language || "pt",
+        language: options.language,
       }),
     }
   );
@@ -25,7 +25,7 @@ export async function fetchRoutes(options: Options): Promise<any> {
 
 export async function fetchGeocode(value: string): Promise<any> {
   return await fetch(
-    `https://api.openrouteservice.org/geocode/search?api_key=5b3ce3597851110001cf6248e5702cf024e241f9af91bbc0f047ed30&text=${value}`
+    `https://api.openrouteservice.org/geocode/search?api_key=${apiKey}&text=${value}`
   ).then(async (res: any) => {
     const result = await res.json();
     return result;

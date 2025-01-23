@@ -7,10 +7,11 @@ const modalRoute = ref({
 const { routes, deleteRoute } = useSavedRoutesStore();
 const { confirm } = confirmDialogStore();
 const { addNotification } = useNotificationStore();
+const { t } = useI18n();
 
-const options = [
+const options = computed(() => [
   {
-    text: "Editar",
+    text: t("buttons.edit"),
     icon: "fa-regular fa-pen-to-square",
     click: (item: Route) => {
       modalRoute.value.open = true;
@@ -18,7 +19,7 @@ const options = [
     },
   },
   {
-    text: "Excluir",
+    text: t("buttons.delete"),
     icon: "fa-regular fa-trash-can",
     class: "text-red-600",
     click: (item: Route) => {
@@ -26,13 +27,13 @@ const options = [
         action: () => {
           deleteRoute(item.id!);
 
-          addNotification(`A rota "${item.name}" foi excluída com sucesso!`);
+          addNotification(t("labels.routeWasDeleted", { obj: item.name }));
         },
-        title: "Deseja excluir o item selecionado?",
+        title: t("labels.wantToDeleteItem"),
       });
     },
   },
-];
+]);
 
 function addNewRoute() {
   modalRoute.value.open = true;
@@ -70,11 +71,11 @@ function addNewRoute() {
       </li>
     </ul>
     <p v-if="!routes.length" class="text-base-300/[.7] text-center py-4 flex-1">
-      Nenhuma rota adicionada!
+      {{ t("labels.noRouteAdded") }}
     </p>
     <AppBtn class="mx-6" @click="() => addNewRoute()">
       <font-awesome-icon icon="fa-solid fa-circle-plus" class="mr-2" />
-      Adicionar rota
+      {{ t("labels.addRoute") }}
     </AppBtn>
 
     <AppModalRoute v-model="modalRoute" />

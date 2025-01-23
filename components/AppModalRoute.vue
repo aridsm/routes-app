@@ -5,6 +5,7 @@ const emits = defineEmits<{
 
 const { saveRoute } = useSavedRoutesStore();
 const { addNotification } = useNotificationStore();
+const { t } = useI18n();
 
 const modelValue = defineModel<{ item: Route; open: boolean }>({
   required: true,
@@ -16,9 +17,9 @@ function onSaveRoute() {
   emits("set-item", newItem);
 
   if (modelValue.value.item.id) {
-    addNotification(`Rota "${newItem.name}" atualizada com sucesso!`);
+    addNotification(t("labels.routeWasUpdated", { obj: newItem.name }));
   } else {
-    addNotification(`Rota "${newItem.name}" criada com sucesso!`);
+    addNotification(t("labels.routeWasCreated", { obj: newItem.name }));
   }
 }
 </script>
@@ -29,13 +30,13 @@ function onSaveRoute() {
     content-class="flex flex-col gap-3 w-[25rem]"
   >
     <span class="text-xl text-center">{{
-      modelValue.item.id ? "Editar rota" : "Criar rota"
+      modelValue.item.id ? t("labels.edit") : t("labels.create")
     }}</span>
 
     <AppInputText
       v-model="modelValue.item.name"
-      placeholder="Digite..."
-      label="Nome da rota"
+      :placeholder="t('labels.typeAvalue')"
+      :label="t('labels.routeName')"
     />
 
     <AppBtn
@@ -43,7 +44,7 @@ function onSaveRoute() {
       :disabled="!modelValue.item.name?.trim().length"
       @click="onSaveRoute"
     >
-      Salvar
+      {{ t("buttons.save") }}
     </AppBtn>
   </AppModal>
 </template>

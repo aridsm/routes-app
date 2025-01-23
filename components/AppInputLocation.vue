@@ -10,6 +10,7 @@ const emits = defineEmits<{
   (name: "change", value: Partial<Destiny>): void;
 }>();
 
+const { t } = useI18n();
 const showItems = ref(false);
 const searchResult = ref<any[]>([]);
 const listItems = ref<HTMLDivElement>();
@@ -84,7 +85,7 @@ function onSelectItem(item: any) {
       v-model="modelValue.value"
       icon="fa-solid fa-location-dot"
       drag
-      placeholder="Localização"
+      :placeholder="t('labels.location')"
       @debounce="onUpdateDestiny"
     />
     <div
@@ -113,7 +114,7 @@ function onSelectItem(item: any) {
           {{ item.properties.label }}
         </li>
       </ul>
-      <p v-else class="p-3">Nenhum resultado</p>
+      <p v-else class="p-3">{{ t("labels.noResults") }}</p>
     </div>
   </div>
 </template>
