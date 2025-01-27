@@ -14,9 +14,12 @@ const { setLocale, locale, t } = useI18n();
 const polylines = ref<Layer>();
 const circlePoints = ref<CircleMarker[]>([]);
 const summary = ref<Summary>();
+const loading = ref(false);
 
-onMounted(() => {
-  loadMap();
+onMounted(async () => {
+  loading.value = true;
+  await loadMap();
+  loading.value = false;
 });
 
 async function loadMap() {
@@ -187,7 +190,9 @@ const options = [
         </div>
       </header>
 
-      <div v-if="windowLoaded" id="map" class="flex-1 min-h-0 h-full"></div>
+      <div v-if="windowLoaded" id="map" class="flex-1 min-h-0 h-full">
+        <AppLoading v-if="loading" class="text-base-300" />
+      </div>
     </div>
   </div>
 </template>
