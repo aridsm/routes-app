@@ -1,4 +1,5 @@
 <script lang="tsx" setup>
+import { useDraggable } from "@vueuse/core";
 import type { CircleMarker, LatLngExpression, Layer, Map } from "leaflet";
 import type Leaflet from "leaflet";
 
@@ -145,12 +146,12 @@ function toggleShowForm() {
 <template>
   <div class="flex flex-1 overflow-hidden min-h-0 relative">
     <div
-      class="w-screen transition top-0 absolute z-[9999] bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
+      class="w-screen transition top-0 z-[9999] absolute bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
       :class="{
         'form-hidden': formShown,
       }"
     >
-      <button class="h-8 lg:hidden" @click="toggleShowForm">
+      <button class="h-9 lg:hidden w-full" @click="toggleShowForm">
         <font-awesome-icon
           icon="fa-solid fa-chevron-up"
           class="transition"
@@ -175,7 +176,7 @@ function toggleShowForm() {
         @set-summary="($event) => (summary = $event)"
       />
     </div>
-    <div class="bg-base-300 flex-1 text-base-0 flex flex-col pb-8 lg:pb-0">
+    <div class="bg-base-300 flex-1 text-base-0 flex flex-col pb-9 lg:pb-0">
       <header class="bg-primary-2 h-12 lg:h-16 flex">
         <h1
           class="bg-primary-3 px-4 lg:px-12 pt-1 text-sm lg:text-xl tracking-wider font-bold flex items-center"
@@ -203,9 +204,9 @@ function toggleShowForm() {
             </div>
           </div>
 
-          <AppOptions :options="menuOptions" class="ml-2" />
+          <AppOptions :options="menuOptions" class="ml-2 2xl:hidden" />
 
-          <div class="hidden lg:flex items-center">
+          <div class="hidden 2xl:flex items-center">
             <a
               href="https://leafletjs.com/"
               target="_blank"
@@ -249,6 +250,6 @@ function toggleShowForm() {
 }
 
 .form-hidden {
-  transform: translateY(calc(100vh - 32px));
+  transform: translateY(calc(100svh - 36px));
 }
 </style>
