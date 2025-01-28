@@ -18,7 +18,7 @@ const L = inject("L");
 const router = useRouter();
 const segments = ref<Segment[]>();
 const currentDestinies = ref<Destiny[]>([]);
-const { deleteRoute, saveRoute } = useSavedRoutesStore();
+const { deleteRoute, saveRoute, getRouteById } = useSavedRoutesStore();
 const { confirm } = confirmDialogStore();
 const { addNotification } = useNotificationStore();
 const loading = ref(false);
@@ -237,8 +237,9 @@ watch(
     deep: true,
   }
 );
+
 onBeforeRouteLeave(() => {
-  if (hasChanges.value) {
+  if (hasChanges.value && !!getRouteById(routeForm.value.id!)) {
     const answer = window.confirm(t("labels.confirmExit"));
     if (!answer) return false;
   }
@@ -246,9 +247,9 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <div v-if="props.item" class="px-6 flex justify-between">
+  <div v-if="props.item" class="px-4 lg:px-6 flex justify-between">
     <div
-      class="bg-primary-1/[.1] h-8 mb-4 rounded-full leading-none pr-6 pl-2 text-primary-1 text-sm gap-3 flex items-center"
+      class="bg-primary-1/[.1] h-7 lg:h-8 mb-4 rounded-full leading-none pr-4 lg:pr-6 pl-1 lg:pl-2 text-primary-1 text-xs lg:text-sm gap-2 lg:gap-3 flex items-center"
     >
       <button
         :title="t('buttons.back')"
@@ -264,17 +265,17 @@ onBeforeRouteLeave(() => {
     </div>
     <AppOptions :item="props.item" :options="options" />
   </div>
-  <div class="flex-1 overflow-auto flex flex-col gap-8 pb-8">
-    <section class="px-6">
-      <h2 class="font-bold tracking-wide mb-2">
+  <div class="flex-1 overflow-auto flex flex-col gap-4 lg:gap-8 pb-4 lg:pb-8">
+    <section class="px-4 lg:px-6">
+      <h2 class="font-bold tracking-wide mb-1 lg:mb-2">
         {{ t("labels.meansOfLocomotion") }}
       </h2>
 
-      <div class="flex gap-3 w-full">
+      <div class="flex gap-2 lg:gap-3 w-full">
         <button
           v-for="locomotion in locomotions"
           :key="locomotion.id"
-          class="flex-1 bg-base-100 rounded-md h-11 flex items-center justify-center text-xl hover:bg-base-200"
+          class="flex-1 bg-base-100 rounded-md h-9 lg:h-11 flex items-center justify-center text-base lg:text-xl hover:bg-base-200"
           :class="{
             '!bg-primary-2 !text-base-0':
               routeForm.locomotion === locomotion.id,
@@ -286,8 +287,8 @@ onBeforeRouteLeave(() => {
       </div>
     </section>
 
-    <section class="px-6">
-      <div class="flex justify-between mb-2 items-center">
+    <section class="px-4 lg:px-6">
+      <div class="flex justify-between mb-1 lg:mb-2 items-center">
         <h2 class="font-bold tracking-wide">{{ t("labels.routes") }}</h2>
         <AppBtn
           @click="
@@ -300,8 +301,9 @@ onBeforeRouteLeave(() => {
           "
           icon
           transparent
+          class="tooltip relative"
           :disabled="routeForm.destinies.length > 5"
-          :title="t('labels.addDestination')"
+          :content="t('labels.addDestination')"
         >
           <font-awesome-icon
             icon="fa-solid fa-circle-plus"
@@ -310,7 +312,7 @@ onBeforeRouteLeave(() => {
         </AppBtn>
       </div>
 
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-2 lg:gap-3">
         <div
           v-for="(destiny, index) in routeForm.destinies"
           :key="destiny.id"
@@ -323,7 +325,7 @@ onBeforeRouteLeave(() => {
           />
           <button
             v-if="index >= 2"
-            class="w-9 h-9 rounded-full hover:bg-base-100 flex items-center justify-center"
+            class="w-9 h-9 rounded-full hover:bg-base-100 text-base flex items-center justify-center"
             :title="t('buttons.delete')"
             @click="routeForm.destinies.splice(index, 1)"
           >
@@ -331,26 +333,32 @@ onBeforeRouteLeave(() => {
           </button>
         </div>
       </div>
-      <p v-if="disabledCalculateRoute" class="text-sm mt-1 text-red-600">
+      <p v-if="disabledCalculateRoute" class="lg:text-sm mt-1 text-red-600">
         {{ t("labels.atLeastTwo") }}
       </p>
 
-      <div class="flex justify-between items-center mt-3">
+      <div
+        class="flex justify-between items-center flex-col lg:flex-row gap-3 mt-3"
+      >
         <button
-          class="bg-primary-1/[.1] rounded-full px-6 text-primary-1 hover:bg-primary-1/[.2] active:hover:bg-primary-1/[.3] pb-1 pt-2 text-sm gap-3 flex"
+          class="bg-primary-1/[.1] rounded-full px-6 text-primary-1 hover:bg-primary-1/[.2] active:hover:bg-primary-1/[.3] pb-1 pt-2 text-xs lg:text-sm gap-3 flex"
           @click="() => setCurrentLocation()"
         >
           <font-awesome-icon icon="fa-solid fa-map-pin" />
           {{ t("labels.useCurrentLocation") }}
         </button>
-        <AppBtn @click="() => getRoutes()" :disabled="disabledCalculateRoute">
+        <AppBtn
+          @click="() => getRoutes()"
+          :disabled="disabledCalculateRoute"
+          class="w-full lg:w-auto"
+        >
           <font-awesome-icon icon="fa-solid fa-signs-post" class="mr-2" />
           {{ t("labels.calculateRoute") }}
         </AppBtn>
       </div>
     </section>
     <AppLoading v-if="loading" class="flex-1" />
-    <section v-if="segments && currentDestinies.length" class="px-6">
+    <section v-if="segments && currentDestinies.length" class="px-4 lg:px-6">
       <h2 class="font-bold tracking-wide mb-2">
         {{ t("labels.howToGetThere") }}
       </h2>
@@ -368,10 +376,10 @@ onBeforeRouteLeave(() => {
             @click="() => (segment.show = !segment.show)"
           >
             <div class="w-full text-start flex flex-col gap-1">
-              <span class="text-sm block opacity-80">
+              <span class="text-xs lg:text-sm block opacity-80">
                 {{ t("labels.path") }} {{ index + 1 }}
               </span>
-              <div class="flex gap-4 items-center font-bold">
+              <div class="flex gap-3 lg:gap-4 items-center font-bold">
                 <p>{{ currentDestinies[index].value }}</p>
 
                 <font-awesome-icon
@@ -397,7 +405,7 @@ onBeforeRouteLeave(() => {
           <Transition>
             <ul
               v-if="segment.show"
-              class="flex flex-col list-decimal pr-4 py-6 !pl-10"
+              class="flex flex-col list-decimal pr-4 py-6 pl-8 lg:!pl-10"
             >
               <li
                 v-for="step in segment.steps"
@@ -412,17 +420,17 @@ onBeforeRouteLeave(() => {
       </ul>
     </section>
   </div>
-  <div v-if="props.item" class="flex w-full p-6 gap-2">
+  <div v-if="props.item" class="flex w-full p-4 lg:p-6 gap-2">
     <AppBtn
       icon
-      class="!w-14 !min-w-14 !h-full !bg-primary-2"
+      class="!w-12 !min-w-12 !h-full !bg-primary-2"
       :disabled="!hasChanges"
       @click="assignLastRouteData"
       :title="t('buttons.restore')"
     >
       <font-awesome-icon icon="fa-solid fa-arrow-rotate-left" />
     </AppBtn>
-    <AppBtn class="w-full" :disabled="!hasChanges" @click="onSaveRoute">
+    <AppBtn class="flex-1" :disabled="!hasChanges" @click="onSaveRoute">
       {{ t("buttons.save") }}
     </AppBtn>
   </div>

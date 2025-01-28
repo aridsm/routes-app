@@ -15,6 +15,7 @@ const polylines = ref<Layer>();
 const circlePoints = ref<CircleMarker[]>([]);
 const summary = ref<Summary>();
 const loading = ref(false);
+const router = useRouter();
 
 onMounted(async () => {
   loading.value = true;
@@ -112,12 +113,51 @@ const options = [
     },
   },
 ];
+
+const menuOptions = [
+  {
+    text: "Leaflet",
+    click: () => {
+      window.open("https://leafletjs.com/", "_blank");
+    },
+  },
+  {
+    text: "OpenRouteService",
+    click: () => {
+      window.open("https://openrouteservice.org/", "_blank");
+    },
+  },
+  {
+    text: "GitHub",
+    icon: "fa-brands fa-github",
+    click: () => {
+      window.open("https://github.com/aridsm", "_blank");
+    },
+  },
+];
+
+const formShown = ref(true);
+function toggleShowForm() {
+  formShown.value = !formShown.value;
+}
 </script>
 
 <template>
-  <div class="flex flex-1 h-full">
-    <div class="w-[33rem] flex flex-col">
-      <div class="p-6 flex justify-between items-center">
+  <div class="flex flex-1 overflow-hidden min-h-0 relative">
+    <div
+      class="w-screen transition top-0 absolute z-[9999] bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
+      :class="{
+        'form-hidden': formShown,
+      }"
+    >
+      <button class="h-8 lg:hidden" @click="toggleShowForm">
+        <font-awesome-icon
+          icon="fa-solid fa-chevron-up"
+          class="transition"
+          :class="{ 'rotate-180': !formShown }"
+        />
+      </button>
+      <div class="p-4 lg:p-6 flex justify-between items-center">
         <AppTabs v-model="activeTab" :tabs="tabs" />
         <AppOptions :options="options" v-slot="{ open }">
           <button class="flex items-center gap-2" @click="open">
@@ -135,15 +175,15 @@ const options = [
         @set-summary="($event) => (summary = $event)"
       />
     </div>
-    <div class="bg-base-300 flex-1 text-base-0 flex flex-col">
-      <header class="bg-primary-2 h-16 flex">
+    <div class="bg-base-300 flex-1 text-base-0 flex flex-col pb-8 lg:pb-0">
+      <header class="bg-primary-2 h-12 lg:h-16 flex">
         <h1
-          class="bg-primary-3 px-12 pt-1 text-xl tracking-wider font-bold flex items-center"
+          class="bg-primary-3 px-4 lg:px-12 pt-1 text-sm lg:text-xl tracking-wider font-bold flex items-center"
         >
           LOGO
         </h1>
-        <div class="px-8 flex items-center w-full justify-between">
-          <p v-if="!polylines" class="mr-auto flex-1">
+        <div class="px-4 lg:px-8 flex items-center w-full justify-between">
+          <p v-if="!polylines" class="mr-auto flex-1 pt-1 sm:pt-0">
             {{ t("header.insert") }}
           </p>
 
@@ -163,7 +203,9 @@ const options = [
             </div>
           </div>
 
-          <div class="flex items-center">
+          <AppOptions :options="menuOptions" class="ml-2" />
+
+          <div class="hidden lg:flex items-center">
             <a
               href="https://leafletjs.com/"
               target="_blank"
@@ -190,7 +232,10 @@ const options = [
         </div>
       </header>
 
-      <div v-if="windowLoaded" id="map" class="flex-1 min-h-0 h-full">
+      <div
+        id="map"
+        class="flex-1 min-h-0 bg-base-100 flex items-center justify-center"
+      >
         <AppLoading v-if="loading" class="text-base-300" />
       </div>
     </div>
@@ -201,5 +246,9 @@ const options = [
 .point-tooltip {
   background: #f6f6f6;
   font-family: "Manjari", serif;
+}
+
+.form-hidden {
+  transform: translateY(calc(100vh - 32px));
 }
 </style>

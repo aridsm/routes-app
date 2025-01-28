@@ -6,11 +6,12 @@ const { t } = useI18n();
 <template>
   <AppModal
     v-model="shown"
+    z-index="99999"
     content-class="w-[20rem] flex flex-col items-center"
   >
     <font-awesome-icon
       :icon="icon ? icon : 'fa-regular fa-hand'"
-      class="mb-4 text-2xl"
+      class="mb-4 text-xl lg:text-2xl"
     />
     <span class="mb-4 text-center">
       {{ title || t("labels.continue") }}

@@ -35,11 +35,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex gap-2 items-center">
+  <div class="flex gap-1 lg:gap-2 items-center">
     <button
       v-for="tab in tabs"
       :key="tab.id"
-      class="rounded-full px-8 h-7 pt-1 hover:bg-base-100 transition"
+      class="rounded-full px-4 lg:px-8 h-6 lg:h-7 pt-1 hover:bg-base-100 transition"
       :class="{
         'bg-primary-1 text-base-0 hover:!bg-primary-1 ': activeTab === tab.id,
       }"

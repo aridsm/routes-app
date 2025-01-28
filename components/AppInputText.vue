@@ -55,7 +55,7 @@ function onBlur() {
     >
       <button
         v-if="drag"
-        class="bg-base-200 w-10 h-full pt-[6px] cursor-grab rounded-l-md absolute"
+        class="bg-base-200 w-10 h-full pt-[6px] text-sm lg:text-base cursor-grab rounded-l-md absolute"
       >
         <font-awesome-icon icon="fa-solid fa-grip-vertical" />
       </button>
@@ -63,7 +63,7 @@ function onBlur() {
       <font-awesome-icon
         v-if="icon"
         :icon="icon"
-        class="ml-4 absolute top-[14px]"
+        class="ml-4 absolute top-[14px] text-sm lg:text-base"
         :class="{
           'text-base-300/[.35]': !lazyValue,
           '!ml-14': drag,
@@ -73,11 +73,11 @@ function onBlur() {
         type="text"
         v-model="lazyValue"
         :placeholder="placeholder || t('labels.enterAValue')"
-        class="bg-transparent w-full h-11 px-4 pt-1 placeholder:text-base-300/[.35] rounded-md outline-offset-1 focus:outline-purple-500"
+        class="bg-transparent w-full h-10 lg:h-11 px-3 lg:px-4 pt-1 placeholder:text-base-300/[.35] rounded-md outline-offset-1 focus:outline-purple-500"
         :class="{
-          'pl-10': icon && !drag,
-          'pl-20': icon && drag,
-          'pl-14': !icon && drag,
+          '!pl-10': icon && !drag,
+          '!pl-20': icon && drag,
+          '!pl-14': !icon && drag,
         }"
         @input="onInput"
         @blur="onBlur"

@@ -94,8 +94,9 @@ function onSelectItem(item: any) {
     />
     <div
       v-else-if="modelValue.coords.length"
-      class="absolute right-3 top-2 w-7 h-7 rounded-full hover:bg-base-200 flex items-center justify-center"
-      :title="modelValue.coords.join(', ')"
+      class="tooltip absolute right-3 top-[6px] lg:top-2 w-7 h-7 text-sm lg:text-base rounded-full hover:bg-base-200 flex items-center justify-center"
+      :content="modelValue.coords.join(', ')"
+      :aria-label="modelValue.coords.join(', ')"
     >
       <font-awesome-icon icon="fa-solid fa-map-pin" />
     </div>
@@ -118,5 +119,3 @@ function onSelectItem(item: any) {
     </div>
   </div>
 </template>
-
-<style scoped></style>

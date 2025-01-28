@@ -57,8 +57,12 @@ function addNewRoute() {
 </script>
 
 <template>
-  <main class="flex-1 min-h-0 overflow-auto flex flex-col gap-3 pb-6">
-    <ul class="flex flex-col gap-3 flex-1 min-h-0 overflow-auto pb-2 px-6">
+  <main
+    class="flex-1 min-h-0 overflow-auto flex flex-col gap-2 lg:gap-3 pb-4 lg:pb-6"
+  >
+    <ul
+      class="flex flex-col gap-2 lg:gap-3 flex-1 min-h-0 overflow-auto pb-2 px-4 lg:px-6"
+    >
       <li
         v-for="route in routes"
         :key="route.id"
@@ -73,7 +77,7 @@ function addNewRoute() {
     <p v-if="!routes.length" class="text-base-300/[.7] text-center py-4 flex-1">
       {{ t("labels.noRouteAdded") }}
     </p>
-    <AppBtn class="mx-6" @click="() => addNewRoute()">
+    <AppBtn class="mx-4 lg:mx-6" @click="() => addNewRoute()">
       <font-awesome-icon icon="fa-solid fa-circle-plus" class="mr-2" />
       {{ t("labels.addRoute") }}
     </AppBtn>

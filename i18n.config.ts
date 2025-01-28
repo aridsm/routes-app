@@ -51,6 +51,7 @@ export default defineI18nConfig(() => ({
         noResults: "No results",
         confirm: "Confirm",
         continue: "Do you want to continue?",
+        edit: "Edit route",
       },
     },
     pt: {
@@ -101,6 +102,7 @@ export default defineI18nConfig(() => ({
         noResults: "Nenhum resultado",
         confirm: "Confirmar",
         continue: "Deseja continuar?",
+        edit: "Editar rota",
       },
     },
   },

@@ -27,7 +27,7 @@ function openOptions() {
     <div ref="activator">
       <slot :open="openOptions">
         <button
-          class="w-9 h-9 rounded-full hover:bg-base-100 flex items-center justify-center"
+          class="w-7 h-7 lg:w-9 lg:h-9 rounded-full text-base hover:bg-base-300/[.2] flex items-center justify-center"
           :title="t('labels.options')"
           @click="openOptions"
         >
@@ -37,7 +37,7 @@ function openOptions() {
     </div>
     <ul
       v-if="optionsShown"
-      class="absolute right-1 top-100% z-10 bg-base-0 rounded-md options-container overflow-hidden"
+      class="absolute right-1 top-100% z-[9999] !text-base-300 bg-base-0 rounded-md options-container overflow-hidden"
     >
       <li
         v-for="option in options"

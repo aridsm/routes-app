@@ -27,9 +27,9 @@ function onSaveRoute() {
 <template>
   <AppModal
     v-model="modelValue.open"
-    content-class="flex flex-col gap-3 w-[25rem]"
+    content-class="flex flex-col gap-3 w-[95vw] lg:w-[25rem]"
   >
-    <span class="text-xl text-center">{{
+    <span class="text-lg lg:text-xl text-center">{{
       modelValue.item.id ? t("labels.edit") : t("labels.create")
     }}</span>
 
