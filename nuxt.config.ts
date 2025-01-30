@@ -29,7 +29,7 @@ export default defineNuxtConfig({
       description: "Search for routes using Leaftet and OpenRouteService",
       theme_color: "#745AC3",
       background_color: "#4CC285",
-      display: "fullscreen",
+      display: "standalone",
       start_url: "/",
       icons: [
         {
