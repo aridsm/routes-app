@@ -31,7 +31,9 @@ function openOptions() {
           :title="t('labels.options')"
           @click="openOptions"
         >
-          <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
+          <client-only>
+            <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
+          </client-only>
         </button>
       </slot>
     </div>
@@ -46,7 +48,9 @@ function openOptions() {
         :class="option.class"
         @click="option.click(props.item as T)"
       >
-        <font-awesome-icon v-if="option.icon" :icon="option.icon" />
+        <client-only>
+          <font-awesome-icon v-if="option.icon" :icon="option.icon" />
+        </client-only>
         <span class="mt-1">
           {{ option.text }}
         </span>

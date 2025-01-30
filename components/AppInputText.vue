@@ -57,18 +57,21 @@ function onBlur() {
         v-if="drag"
         class="bg-base-200 w-10 h-full pt-[6px] text-sm lg:text-base cursor-grab rounded-l-md absolute"
       >
-        <font-awesome-icon icon="fa-solid fa-grip-vertical" />
+        <client-only>
+          <font-awesome-icon icon="fa-solid fa-grip-vertical" />
+        </client-only>
       </button>
 
-      <font-awesome-icon
-        v-if="icon"
-        :icon="icon"
-        class="ml-4 absolute top-[14px] text-sm lg:text-base"
-        :class="{
-          'text-base-300/[.35]': !lazyValue,
-          '!ml-14': drag,
-        }"
-      />
+      <client-only>
+        <font-awesome-icon
+          v-if="icon"
+          :icon="icon"
+          class="ml-4 absolute top-[14px] text-sm lg:text-base"
+          :class="{
+            'text-base-300/[.35]': !lazyValue,
+            '!ml-14': drag,
+          }"
+      /></client-only>
       <input
         type="text"
         v-model="lazyValue"

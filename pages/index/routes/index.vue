@@ -78,7 +78,9 @@ function addNewRoute() {
       {{ t("labels.noRouteAdded") }}
     </p>
     <AppBtn class="mx-4 lg:mx-6" @click="() => addNewRoute()">
-      <font-awesome-icon icon="fa-solid fa-circle-plus" class="mr-2" />
+      <client-only>
+        <font-awesome-icon icon="fa-solid fa-circle-plus" class="mr-2" />
+      </client-only>
       {{ t("labels.addRoute") }}
     </AppBtn>
 

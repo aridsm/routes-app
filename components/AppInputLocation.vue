@@ -98,7 +98,9 @@ function onSelectItem(item: any) {
       :content="modelValue.coords.join(', ')"
       :aria-label="modelValue.coords.join(', ')"
     >
-      <font-awesome-icon icon="fa-solid fa-map-pin" />
+      <client-only>
+        <font-awesome-icon icon="fa-solid fa-map-pin" />
+      </client-only>
     </div>
     <div
       v-if="showItems"

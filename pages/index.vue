@@ -152,21 +152,26 @@ function toggleShowForm() {
       }"
     >
       <button class="h-9 lg:hidden w-full" @click="toggleShowForm">
-        <font-awesome-icon
-          icon="fa-solid fa-chevron-up"
-          class="transition"
-          :class="{ 'rotate-180': !formShown }"
-        />
+        <client-only>
+          <font-awesome-icon
+            icon="fa-solid fa-chevron-up"
+            class="transition"
+            :class="{ 'rotate-180': !formShown }"
+          />
+        </client-only>
       </button>
       <div class="p-4 lg:p-6 flex justify-between items-center">
         <AppTabs v-model="activeTab" :tabs="tabs" />
         <AppOptions :options="options" v-slot="{ open }">
           <button class="flex items-center gap-2" @click="open">
             {{ locale === "pt" ? "pt-BR" : "en-US" }}
-            <font-awesome-icon
-              icon="fa-solid fa-language"
-              class="ml-1 -mt-1 text-xl"
-            />
+
+            <client-only>
+              <font-awesome-icon
+                icon="fa-solid fa-language"
+                class="ml-1 -mt-1 text-xl"
+              />
+            </client-only>
           </button>
         </AppOptions>
       </div>

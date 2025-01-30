@@ -282,7 +282,9 @@ onBeforeRouteLeave(() => {
           }"
           @click="() => onSelectLocomotion(locomotion.id)"
         >
-          <font-awesome-icon :icon="locomotion.icon" />
+          <client-only>
+            <font-awesome-icon :icon="locomotion.icon" />
+          </client-only>
         </button>
       </div>
     </section>
@@ -305,10 +307,12 @@ onBeforeRouteLeave(() => {
           :disabled="routeForm.destinies.length > 5"
           :content="t('labels.addDestination')"
         >
-          <font-awesome-icon
-            icon="fa-solid fa-circle-plus"
-            class="!text-primary-1 text-xl"
-          />
+          <client-only>
+            <font-awesome-icon
+              icon="fa-solid fa-circle-plus"
+              class="!text-primary-1 text-xl"
+            />
+          </client-only>
         </AppBtn>
       </div>
 
