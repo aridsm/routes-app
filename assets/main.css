@@ -6,7 +6,7 @@
 
 body {
   font-family: "Manjari", serif;
-  @apply bg-base-0 text-base-300 text-xs lg:text-base;
+  @apply bg-base-0 text-base-300 text-sm lg:text-base;
 }
 
 ::-webkit-scrollbar {

@@ -7,7 +7,7 @@ const { t } = useI18n();
   <AppModal
     v-model="shown"
     z-index="99999"
-    content-class="w-[20rem] flex flex-col items-center"
+    content-class="w-full sm:w-[20rem] flex flex-col items-center"
   >
     <client-only>
       <font-awesome-icon

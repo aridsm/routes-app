@@ -27,9 +27,9 @@ function onSaveRoute() {
 <template>
   <AppModal
     v-model="modelValue.open"
-    content-class="flex flex-col gap-3 w-[95vw] lg:w-[25rem]"
+    content-class="flex flex-col w-[95vw] lg:w-[25rem]"
   >
-    <span class="text-lg lg:text-xl text-center">{{
+    <span class="text-lg text-center">{{
       modelValue.item.id ? t("labels.edit") : t("labels.create")
     }}</span>
 
@@ -37,6 +37,7 @@ function onSaveRoute() {
       v-model="modelValue.item.name"
       :placeholder="t('labels.typeAvalue')"
       :label="t('labels.routeName')"
+      class="mb-3"
     />
 
     <AppBtn

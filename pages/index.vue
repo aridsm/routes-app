@@ -160,7 +160,7 @@ function toggleShowForm() {
           />
         </client-only>
       </button>
-      <div class="p-4 lg:p-6 flex justify-between items-center">
+      <div class="px-4 pb-4 pt-1 lg:p-6 flex justify-between items-center">
         <AppTabs v-model="activeTab" :tabs="tabs" />
         <AppOptions :options="options" v-slot="{ open }">
           <button class="flex items-center gap-2" @click="open">
@@ -189,7 +189,10 @@ function toggleShowForm() {
           LOGO
         </h1>
         <div class="px-4 lg:px-8 flex items-center w-full justify-between">
-          <p v-if="!polylines" class="mr-auto flex-1 pt-1 sm:pt-0">
+          <p
+            v-if="!polylines"
+            class="mr-auto flex-1 pt-1 sm:pt-0 text-xs lg:text-base"
+          >
             {{ t("header.insert") }}
           </p>
 

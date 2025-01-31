@@ -249,7 +249,7 @@ onBeforeRouteLeave(() => {
 <template>
   <div v-if="props.item" class="px-4 lg:px-6 flex justify-between">
     <div
-      class="bg-primary-1/[.1] h-7 lg:h-8 mb-4 rounded-full leading-none pr-4 lg:pr-6 pl-1 lg:pl-2 text-primary-1 text-xs lg:text-sm gap-2 lg:gap-3 flex items-center"
+      class="bg-primary-1/[.1] h-7 lg:h-8 mb-4 rounded-full leading-none pr-4 lg:pr-6 pl-1 lg:pl-2 text-primary-1 text-sm lg:text-sm gap-2 lg:gap-3 flex items-center"
     >
       <button
         :title="t('buttons.back')"
@@ -345,7 +345,7 @@ onBeforeRouteLeave(() => {
         class="flex justify-between items-center flex-col lg:flex-row gap-3 mt-3"
       >
         <button
-          class="bg-primary-1/[.1] rounded-full px-6 text-primary-1 hover:bg-primary-1/[.2] active:hover:bg-primary-1/[.3] pb-1 pt-2 text-xs lg:text-sm gap-3 flex"
+          class="bg-primary-1/[.1] rounded-full px-6 text-primary-1 hover:bg-primary-1/[.2] active:hover:bg-primary-1/[.3] pb-1 pt-2 text-sm lg:text-sm gap-3 flex"
           @click="() => setCurrentLocation()"
         >
           <font-awesome-icon icon="fa-solid fa-map-pin" />
@@ -380,7 +380,7 @@ onBeforeRouteLeave(() => {
             @click="() => (segment.show = !segment.show)"
           >
             <div class="w-full text-start flex flex-col gap-1">
-              <span class="text-xs lg:text-sm block opacity-80">
+              <span class="text-sm lg:text-sm block opacity-80">
                 {{ t("labels.path") }} {{ index + 1 }}
               </span>
               <div class="flex gap-3 lg:gap-4 items-center font-bold">
@@ -388,7 +388,7 @@ onBeforeRouteLeave(() => {
 
                 <font-awesome-icon
                   icon="fa-solid fa-chevron-right"
-                  class="text-xs mb-1"
+                  class="text-sm mb-1"
                 />
                 <p>{{ currentDestinies[index + 1].value }}</p>
               </div>
@@ -427,7 +427,7 @@ onBeforeRouteLeave(() => {
   <div v-if="props.item" class="flex w-full p-4 lg:p-6 gap-2">
     <AppBtn
       icon
-      class="!w-12 !min-w-12 !h-full !bg-primary-2"
+      class="!w-14 !min-w-14 !h-full !bg-primary-2"
       :disabled="!hasChanges"
       @click="assignLastRouteData"
       :title="t('buttons.restore')"
