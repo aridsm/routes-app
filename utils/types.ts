@@ -1,3 +1,5 @@
+import type { NotificationType } from "./enums/NotificationType";
+
 export type locomotion = "driving-car" | "foot-walking" | "cycling-regular";
 
 export interface Destiny {
@@ -50,4 +52,11 @@ export interface ConfirmOptions {
   title: string;
   action: () => void;
   icon?: string;
+}
+
+export interface NotificationItem {
+  text: string;
+  id: number;
+  type: NotificationType;
+  delete: () => void;
 }

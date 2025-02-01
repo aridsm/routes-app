@@ -438,7 +438,7 @@ onBeforeRouteLeave(() => {
   <div v-if="props.item" class="flex w-full p-4 lg:p-6 gap-2">
     <AppBtn
       icon
-      class="!w-14 !min-w-14 !h-full !bg-primary-2"
+      class="!w-[56px] !min-w-[56px] !h-full !bg-primary-2"
       :disabled="!hasChanges"
       @click="assignLastRouteData"
       :title="t('buttons.restore')"

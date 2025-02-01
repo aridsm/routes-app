@@ -1,24 +1,27 @@
 import { NotificationType } from "~/utils/enums/NotificationType";
 
 export const useNotificationStore = defineStore("notificationStore", () => {
-  const notifications = ref<
-    { text: string; id: number; type: NotificationType }[]
-  >([]);
+  const notifications = ref<NotificationItem[]>([]);
 
   function addNotification(
     text: string,
     type: NotificationType = NotificationType.Success
   ) {
     const id = Math.random();
-    notifications.value.push({
+
+    const newNotification = {
       text,
       id,
       type,
-    });
+      delete: () => {
+        const index = notifications.value.findIndex((not) => not.id === id);
+        if (index >= 0) notifications.value.splice(index, 1);
+      },
+    };
+    notifications.value.push(newNotification);
 
     setTimeout(() => {
-      const index = notifications.value.findIndex((not) => not.id === id);
-      if (index >= 0) notifications.value.splice(index, 1);
+      newNotification.delete();
     }, 5000);
   }
 

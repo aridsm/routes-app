@@ -1,6 +1,4 @@
 <script lang="tsx" setup>
-import { NotificationType } from "~/utils/enums/NotificationType";
-
 const { notifications } = storeToRefs(useNotificationStore());
 </script>
 
@@ -8,21 +6,24 @@ const { notifications } = storeToRefs(useNotificationStore());
   <div
     class="absolute top-4 lg:top-[initial] lg:right-4 lg:bottom-4 z-[9999] flex flex-col gap-2 px-4 lg:px-0 w-full lg:w-fit"
   >
-    <div
-      v-for="notification in notifications"
-      :key="notification.id"
-      class="text-base-0 w-full lg:w-80 rounded-md px-4 py-3"
-      :class="{
-        'bg-primary-3': notification.type === NotificationType.Success,
-        'bg-red-500': notification.type === NotificationType.Failure,
-      }"
-    >
-      <client-only>
-        <font-awesome-icon icon="fa-regular fa-circle-check" class="mr-2" />
-      </client-only>
-      {{ notification.text }}
-    </div>
+    <TransitionGroup name="list">
+      <AppNotificationItem
+        v-for="notification in notifications"
+        :key="notification.id"
+        :notification="notification"
+      />
+    </TransitionGroup>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.4s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(50px);
+}
+</style>
