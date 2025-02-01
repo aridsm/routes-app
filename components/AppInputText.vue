@@ -1,4 +1,6 @@
 <script lang="tsx" setup>
+import { templateRef, useDraggable, useElementBounding } from "@vueuse/core";
+
 const { t } = useI18n();
 
 const props = defineProps({
@@ -20,6 +22,26 @@ const emits = defineEmits<{
 const modelValue = defineModel<string | undefined>({ required: true });
 const lazyValue = ref<string | undefined>(modelValue.value);
 const timeOut = ref();
+const btnDrag = useTemplateRef<HTMLButtonElement>("btnDrag");
+const target = useTemplateRef<HTMLDivElement>("target");
+
+const { left, top } = useElementBounding(target);
+
+const { x, y, isDragging } = useDraggable(btnDrag, {
+  onMove(position, event) {
+    console.log(position);
+    console.log(left.value, top.value);
+  },
+});
+
+const styles = computed(() => {
+  const positions = { x: x.value - left.value, y: y.value - top.value };
+
+  return {
+    left: `${isDragging ? positions.x : 0}px`,
+    top: `${isDragging ? positions.y : 0}px`,
+  };
+});
 
 watch(
   () => modelValue.value,
@@ -48,13 +70,14 @@ function onBlur() {
 </script>
 
 <template>
-  <div>
+  <div ref="target" class="relative target">
     <span class="text-primary-1 font-bold">{{ label }}</span>
     <div
       class="bg-base-100 rounded-md flex items-center text-base-300 relative"
     >
       <button
         v-if="drag"
+        ref="btnDrag"
         class="bg-base-200 w-10 h-full pt-[6px] text-sm lg:text-base cursor-grab rounded-l-md absolute"
       >
         <client-only>
@@ -89,4 +112,8 @@ function onBlur() {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.target {
+  touch-action: none;
+}
+</style>

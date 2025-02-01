@@ -7,8 +7,6 @@ const L = inject<typeof Leaflet>("L")!;
 
 const activeTab = ref("navigate");
 
-const windowLoaded = computed(() => typeof window !== "undefined");
-
 const map = ref<Map>();
 const { setLocale, locale, t } = useI18n();
 
@@ -16,7 +14,6 @@ const polylines = ref<Layer>();
 const circlePoints = ref<CircleMarker[]>([]);
 const summary = ref<Summary>();
 const loading = ref(false);
-const router = useRouter();
 
 onMounted(async () => {
   loading.value = true;
@@ -25,18 +22,21 @@ onMounted(async () => {
 });
 
 async function loadMap() {
-  const coords: {
-    longitude: number;
-    latitude: number;
-  } = await getUserPosition();
-
-  map.value = L.map("map").setView([coords.latitude, coords.longitude], 13);
+  try {
+    const coords: {
+      longitude: number;
+      latitude: number;
+    } = await getUserPosition();
+    map.value = L.map("map").setView([coords.latitude, coords.longitude], 13);
+  } catch (err: any) {
+    map.value = L.map("map").setView([-14.235, -50], 4);
+  }
 
   map.value?.on("dragend", () => {
     map.value?.fitBounds(map.value.getBounds());
   });
 
-  map.value?.on("click", (e) => {});
+  // map.value?.on("click", (e) => {});
 
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
@@ -246,6 +246,7 @@ function toggleShowForm() {
         class="flex-1 min-h-0 bg-base-100 flex items-center justify-center"
       >
         <AppLoading v-if="loading" class="text-base-300" />
+        <div class="flex flex-col"></div>
       </div>
     </div>
   </div>

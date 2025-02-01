@@ -1,5 +1,6 @@
 <script lang="tsx" setup>
 import type Leaflet from "leaflet";
+import { NotificationType } from "~/utils/enums/NotificationType";
 
 const props = defineProps({
   item: {
@@ -130,30 +131,40 @@ async function getRoutes() {
       emits("set-summary", features.properties.summary);
       emits("set-points", coords, routeForm.value.destinies);
     })
+    .catch((err: any) => {
+      addNotification(t("errors.errorGetRoutes"), NotificationType.Failure);
+    })
     .finally(() => {
       loading.value = false;
     });
 }
 
 async function setCurrentLocation() {
-  const pos: any = await getUserPosition();
+  try {
+    const pos: any = await getUserPosition();
 
-  let firstBlankField = routeForm.value.destinies.find(
-    (destiny) => !destiny.value.trim()
-  );
+    let firstBlankField = routeForm.value.destinies.find(
+      (destiny) => !destiny.value.trim()
+    );
 
-  if (!firstBlankField && routeForm.value.destinies.length < 6) {
-    routeForm.value.destinies.push({
-      id: Math.random(),
-      value: "",
-      coords: [],
-    });
-    firstBlankField = routeForm.value.destinies.at(-1);
-  }
+    if (!firstBlankField && routeForm.value.destinies.length < 6) {
+      routeForm.value.destinies.push({
+        id: Math.random(),
+        value: "",
+        coords: [],
+      });
+      firstBlankField = routeForm.value.destinies.at(-1);
+    }
 
-  if (firstBlankField) {
-    firstBlankField.coords = [pos.longitude, pos.latitude];
-    firstBlankField.value = firstBlankField.coords.join(", ");
+    if (firstBlankField) {
+      firstBlankField.coords = [pos.longitude, pos.latitude];
+      firstBlankField.value = firstBlankField.coords.join(", ");
+    }
+  } catch (err: any) {
+    addNotification(
+      t("errors.errorGetCurrentLocation"),
+      NotificationType.Failure
+    );
   }
 }
 

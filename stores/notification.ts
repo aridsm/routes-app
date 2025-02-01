@@ -1,11 +1,19 @@
-export const useNotificationStore = defineStore("notificationStore", () => {
-  const notifications = ref<{ text: string; id: number }[]>([]);
+import { NotificationType } from "~/utils/enums/NotificationType";
 
-  function addNotification(text: string) {
+export const useNotificationStore = defineStore("notificationStore", () => {
+  const notifications = ref<
+    { text: string; id: number; type: NotificationType }[]
+  >([]);
+
+  function addNotification(
+    text: string,
+    type: NotificationType = NotificationType.Success
+  ) {
     const id = Math.random();
     notifications.value.push({
       text,
       id,
+      type,
     });
 
     setTimeout(() => {

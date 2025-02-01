@@ -1,4 +1,6 @@
 <script lang="tsx" setup>
+import { NotificationType } from "~/utils/enums/NotificationType";
+
 const { notifications } = storeToRefs(useNotificationStore());
 </script>
 
@@ -9,7 +11,11 @@ const { notifications } = storeToRefs(useNotificationStore());
     <div
       v-for="notification in notifications"
       :key="notification.id"
-      class="bg-primary-3 text-base-0 w-full lg:w-80 rounded-md px-4 py-3"
+      class="text-base-0 w-full lg:w-80 rounded-md px-4 py-3"
+      :class="{
+        'bg-primary-3': notification.type === NotificationType.Success,
+        'bg-red-500': notification.type === NotificationType.Failure,
+      }"
     >
       <client-only>
         <font-awesome-icon icon="fa-regular fa-circle-check" class="mr-2" />

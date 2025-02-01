@@ -1,11 +1,16 @@
 export function getUserPosition(): any {
   return new Promise((resolve, reject) => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        resolve(pos.coords);
-      });
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          resolve(pos.coords);
+        },
+        () => {
+          reject("Acesso à localização negado");
+        }
+      );
     } else {
-      reject({ latitude: 0, longitude: 0 });
+      reject("Geolocalização não suportada");
     }
   });
 }

@@ -90,7 +90,7 @@ function onSelectItem(item: any) {
     />
     <div
       v-if="loading"
-      class="absolute right-3 top-[14px] border-2 border-primary-1 border-t-transparent animate-spin w-4 h-4 rounded-full"
+      class="absolute right-3 top-3 lg:top-[14px] border-2 border-primary-1 border-t-transparent animate-spin w-4 h-4 rounded-full"
     />
     <div
       v-else-if="modelValue.coords.length"

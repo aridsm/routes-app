@@ -17,6 +17,12 @@ export default defineI18nConfig(() => ({
         save: "Save changes",
         restore: "Restore modifications",
       },
+      errors: {
+        errorGetRoutes:
+          "It was not possible to calculate the route to the selected locations.",
+        errorGetCurrentLocation:
+          "It was not possible to obtain the current location. Check location access in your browser.",
+      },
       labels: {
         myGithub: "My GitHub",
         noRouteAdded: "No routes added",
@@ -68,6 +74,12 @@ export default defineI18nConfig(() => ({
         back: "Voltar",
         save: "Salvar alterações",
         restore: "Restaurar modificações",
+      },
+      errors: {
+        errorGetRoutes:
+          "Não foi possível calcular o percurso para as localidades selecionadas",
+        errorGetCurrentLocation:
+          "Não foi possível obter a localização atual. Verifique o acesso à localização no seu navegador.",
       },
       labels: {
         myGithub: "Meu GitHub",
