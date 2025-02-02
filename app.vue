@@ -5,7 +5,7 @@ useHead({
 </script>
 
 <template>
-  <div class="!h-[100svh] flex flex-col overflow-hidden">
+  <div class="!h-screen flex flex-col overflow-hidden">
     <NuxtPage />
     <AppConfirmDialog />
     <AppNotification />

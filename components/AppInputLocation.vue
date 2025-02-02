@@ -180,10 +180,16 @@ function onSelectItem(item: any) {
     <div
       v-if="loading"
       class="absolute right-3 top-3 lg:top-[14px] border-2 border-primary-1 border-t-transparent animate-spin w-4 h-4 rounded-full"
+      :class="{
+        '!right-14': index >= 2,
+      }"
     />
     <div
       v-else-if="modelValue.coords.length"
       class="tooltip absolute right-3 top-[6px] lg:top-2 w-7 h-7 text-sm lg:text-base rounded-full bg-base-100 hover:bg-base-200 flex items-center justify-center"
+      :class="{
+        '!right-14': index >= 2,
+      }"
       :content="modelValue.coords.join(', ')"
       :aria-label="modelValue.coords.join(', ')"
     >

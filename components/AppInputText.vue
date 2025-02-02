@@ -76,7 +76,7 @@ function onBlur() {
           inputClasses,
           {
             'pl-10': icon,
-            'pl-20': $slots.before,
+            '!pl-20': $slots.before,
           },
         ]"
         @input="onInput"

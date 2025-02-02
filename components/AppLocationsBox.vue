@@ -49,7 +49,7 @@ watch(
 }
 .list-enter-from,
 .list-leave-to {
-  transform: translateX(50px);
+  transform: translateY(50px) scale(30%);
   opacity: 0;
 }
 </style>

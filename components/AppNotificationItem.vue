@@ -48,5 +48,6 @@ const leftPosition = computed(() => {
 <style scoped>
 .notification {
   touch-action: none;
+  box-shadow: 5px 10px 10px rgb(69, 73, 112, 0.1);
 }
 </style>
