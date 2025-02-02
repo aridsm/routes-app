@@ -22,7 +22,7 @@ const { x } = useDraggable(notificationEl, {
 });
 
 const leftPosition = computed(() => {
-  return x.value > 0 ? x.value * 0.5 : 0;
+  return x.value > 0 ? x.value * 0.7 : 0;
 });
 </script>
 

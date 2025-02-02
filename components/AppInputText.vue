@@ -1,6 +1,4 @@
 <script lang="tsx" setup>
-import { templateRef, useDraggable, useElementBounding } from "@vueuse/core";
-
 const { t } = useI18n();
 
 const props = defineProps({
@@ -13,6 +11,7 @@ const props = defineProps({
     default: 600,
   },
   label: String,
+  inputClasses: String,
 });
 
 const emits = defineEmits<{
@@ -22,26 +21,6 @@ const emits = defineEmits<{
 const modelValue = defineModel<string | undefined>({ required: true });
 const lazyValue = ref<string | undefined>(modelValue.value);
 const timeOut = ref();
-const btnDrag = useTemplateRef<HTMLButtonElement>("btnDrag");
-const target = useTemplateRef<HTMLDivElement>("target");
-
-const { left, top } = useElementBounding(target);
-
-const { x, y, isDragging } = useDraggable(btnDrag, {
-  onMove(position, event) {
-    console.log(position);
-    console.log(left.value, top.value);
-  },
-});
-
-const styles = computed(() => {
-  const positions = { x: x.value - left.value, y: y.value - top.value };
-
-  return {
-    left: `${isDragging ? positions.x : 0}px`,
-    top: `${isDragging ? positions.y : 0}px`,
-  };
-});
 
 watch(
   () => modelValue.value,
@@ -70,21 +49,14 @@ function onBlur() {
 </script>
 
 <template>
-  <div ref="target" class="relative target">
+  <div class="relative">
     <span class="text-primary-1 font-bold">{{ label }}</span>
     <div
       class="bg-base-100 rounded-md flex items-center text-base-300 relative"
     >
-      <button
-        v-if="drag"
-        ref="btnDrag"
-        class="bg-base-200 w-10 h-full pt-[6px] text-sm lg:text-base cursor-grab rounded-l-md absolute"
-      >
-        <client-only>
-          <font-awesome-icon icon="fa-solid fa-grip-vertical" />
-        </client-only>
-      </button>
-
+      <div v-if="$slots.before" class="absolute z-10 w-10 h-10 lg:h-11">
+        <slot name="before" />
+      </div>
       <client-only>
         <font-awesome-icon
           v-if="icon"
@@ -92,7 +64,7 @@ function onBlur() {
           class="ml-4 absolute top-[14px] text-sm lg:text-base"
           :class="{
             'text-base-300/[.35]': !lazyValue,
-            '!ml-14': drag,
+            'pl-10': $slots.before,
           }"
       /></client-only>
       <input
@@ -100,20 +72,16 @@ function onBlur() {
         v-model="lazyValue"
         :placeholder="placeholder || t('labels.enterAValue')"
         class="bg-transparent w-full h-10 lg:h-11 px-3 lg:px-4 pt-1 placeholder:text-base-300/[.35] rounded-md outline-offset-1 focus:outline-purple-500"
-        :class="{
-          '!pl-10': icon && !drag,
-          '!pl-20': icon && drag,
-          '!pl-14': !icon && drag,
-        }"
+        :class="[
+          inputClasses,
+          {
+            'pl-10': icon,
+            'pl-20': $slots.before,
+          },
+        ]"
         @input="onInput"
         @blur="onBlur"
       />
     </div>
   </div>
 </template>
-
-<style scoped>
-.target {
-  touch-action: none;
-}
-</style>

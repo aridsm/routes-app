@@ -328,25 +328,7 @@ onBeforeRouteLeave(() => {
       </div>
 
       <div class="flex flex-col gap-2 lg:gap-3">
-        <div
-          v-for="(destiny, index) in routeForm.destinies"
-          :key="destiny.id"
-          class="flex gap-2 items-center"
-        >
-          <AppInputLocation
-            :destiny="destiny"
-            @change="Object.assign(destiny, $event)"
-            class="flex-1"
-          />
-          <button
-            v-if="index >= 2"
-            class="w-9 h-9 rounded-full hover:bg-base-100 text-base flex items-center justify-center"
-            :title="t('buttons.delete')"
-            @click="routeForm.destinies.splice(index, 1)"
-          >
-            <font-awesome-icon icon="fa-regular fa-trash-can" />
-          </button>
-        </div>
+        <AppLocationsBox :destinies="routeForm.destinies" />
       </div>
       <p v-if="disabledCalculateRoute" class="lg:text-sm mt-1 text-red-600">
         {{ t("labels.atLeastTwo") }}

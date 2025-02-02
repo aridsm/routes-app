@@ -1,5 +1,4 @@
 <script lang="tsx" setup>
-import { useDraggable } from "@vueuse/core";
 import type { CircleMarker, LatLngExpression, Layer, Map } from "leaflet";
 import type Leaflet from "leaflet";
 
