@@ -137,23 +137,28 @@ const menuOptions = [
 ];
 
 const formShown = ref(true);
+
 function toggleShowForm() {
   formShown.value = !formShown.value;
+}
+
+function openForm() {
+  formShown.value = true;
 }
 </script>
 
 <template>
   <div class="flex flex-1 overflow-hidden min-h-0 relative">
     <div
-      class="w-screen transition top-0 z-[9999] absolute bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
+      class="w-screen rounded-t-2xl container-form transition pb-20 lg:pb-0 translate-y-20 top-0 z-[9999] absolute bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
       :class="{
-        'form-hidden': formShown,
+        '!translate-y-full': !formShown,
       }"
     >
       <button class="h-9 lg:hidden w-full" @click="toggleShowForm">
         <client-only>
           <font-awesome-icon
-            icon="fa-solid fa-chevron-up"
+            icon="fa-solid fa-chevron-down"
             class="transition"
             :class="{ 'rotate-180': !formShown }"
           />
@@ -180,7 +185,7 @@ function toggleShowForm() {
         @set-summary="($event) => (summary = $event)"
       />
     </div>
-    <div class="bg-base-300 flex-1 text-base-0 flex flex-col pb-9 lg:pb-0">
+    <div class="bg-base-300 relative flex-1 text-base-0 flex flex-col pb-0">
       <header class="bg-primary-2 h-12 lg:h-16 flex">
         <h1
           class="bg-primary-3 px-4 lg:px-12 pt-1 text-sm lg:text-xl tracking-wider font-bold flex items-center"
@@ -240,12 +245,18 @@ function toggleShowForm() {
         </div>
       </header>
 
+      <button
+        class="absolute right-4 bg-base-300/[.5] bottom-8 z-[999] w-12 h-12 flex items-center justify-center text-lg rounded-full"
+        @click="openForm"
+      >
+        <font-awesome-icon icon="fa-solid fa-map-location-dot" />
+      </button>
+
       <div
         id="map"
         class="flex-1 min-h-0 bg-base-100 flex items-center justify-center"
       >
         <AppLoading v-if="loading" class="text-base-300" />
-        <div class="flex flex-col"></div>
       </div>
     </div>
   </div>
@@ -257,7 +268,7 @@ function toggleShowForm() {
   font-family: "Manjari", serif;
 }
 
-.form-hidden {
-  transform: translateY(calc(100svh - 36px));
+.container-form {
+  box-shadow: 0 -5px 20px rgb(69, 73, 112, 0.06);
 }
 </style>
