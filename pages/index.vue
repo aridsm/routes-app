@@ -200,15 +200,17 @@ function openForm() {
             {{ t("header.insert") }}
           </p>
 
-          <div v-if="summary" class="flex gap-4 items-center">
-            <div class="flex gap-3 items-center">
+          <div
+            v-if="summary"
+            class="flex text-xs lg:text-base gap-4 items-center"
+          >
+            <div class="flex gap-2 items-center">
               <font-awesome-icon icon="fa-solid fa-car-side" />
               <span class="pt-1">
                 {{ convertMetersToKm(summary?.distance) }} km
               </span>
             </div>
-            <div class="w-[2px] h-6 bg-primary-3" />
-            <div class="flex gap-3 items-center">
+            <div class="flex gap-2 items-center">
               <font-awesome-icon icon="fa-regular fa-clock" />
               <span class="pt-1">
                 {{ convertTime(summary?.duration) }}

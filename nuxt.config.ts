@@ -180,6 +180,22 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      link: [
+        {
+          rel: "icon",
+          href: "android/android-launchericon-512-512.png",
+          sizes: "512x512",
+        },
+        {
+          rel: "icon",
+          href: "android/android-launchericon-192-192.png",
+          sizes: "192x192",
+        },
+        {
+          rel: "apple-touch-icon",
+          href: "ios/180.png",
+        },
+      ],
       meta: [
         { name: "mobile-web-app-capable", content: "yes" },
         {
