@@ -1,4 +1,5 @@
 <script lang="tsx" setup>
+import { useDraggable, useElementBounding } from "@vueuse/core";
 import type { CircleMarker, LatLngExpression, Layer, Map } from "leaflet";
 import type Leaflet from "leaflet";
 
@@ -136,33 +137,77 @@ const menuOptions = [
   },
 ];
 
-const formShown = ref(true);
-
-function toggleShowForm() {
-  formShown.value = !formShown.value;
-}
+const btnDrag = useTemplateRef("btnDrag");
+const formShown = ref(false);
+const largeScreen = ref(true);
+const posY = ref(0);
+const initialTop = 128;
+const maxTop = 480;
 
 function openForm() {
   formShown.value = true;
 }
+
+const { y, isDragging } = useDraggable(btnDrag, {
+  onMove(position) {
+    posY.value = position.y;
+  },
+  onEnd(position) {
+    if (position.y > maxTop) {
+      formShown.value = false;
+    }
+    posY.value = 0;
+  },
+});
+
+function onCheckScreenWidth() {
+  if (window.innerWidth >= 1024) {
+    largeScreen.value = true;
+  } else {
+    largeScreen.value = false;
+  }
+}
+
+onMounted(() => {
+  onCheckScreenWidth();
+  window.addEventListener("resize", onCheckScreenWidth);
+});
+
+const styles = computed(() => {
+  if (largeScreen.value) {
+    return {
+      top: 0,
+    };
+  }
+  if (formShown.value) {
+    return isDragging.value && posY.value > initialTop
+      ? {
+          top: `${posY.value}px`,
+        }
+      : {
+          top: `${initialTop}px`,
+          transition: "all 0.2s ease",
+        };
+  }
+  return {
+    transform: "translateY(100%)",
+    transition: "all 0.2s ease",
+    top: `${maxTop}px`,
+  };
+});
 </script>
 
 <template>
   <div class="flex flex-1 overflow-hidden min-h-0 relative">
     <div
-      class="w-screen rounded-t-2xl container-form transition pb-20 lg:pb-0 translate-y-20 top-0 z-[9999] absolute bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
-      :class="{
-        '!translate-y-full': !formShown,
-      }"
+      class="w-screen rounded-t-2xl container-form pb-32 lg:pb-0 z-[9999] absolute bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
+      :style="styles"
     >
-      <button class="h-9 lg:hidden w-full" @click="toggleShowForm">
-        <client-only>
-          <font-awesome-icon
-            icon="fa-solid fa-chevron-down"
-            class="transition"
-            :class="{ 'rotate-180': !formShown }"
-          />
-        </client-only>
+      <button
+        ref="btnDrag"
+        class="h-9 lg:hidden w-full cursor-grab flex justify-center items-center"
+      >
+        <div class="w-7 h-1 bg-base-200 rounded-lg mx-a" />
       </button>
       <div class="px-4 pb-4 pt-1 lg:p-6 flex justify-between items-center">
         <AppTabs v-model="activeTab" :tabs="tabs" />
@@ -264,7 +309,7 @@ function openForm() {
   </div>
 </template>
 
-<style>
+<style scoped>
 .point-tooltip {
   background: #f6f6f6;
   font-family: "Manjari", serif;
@@ -272,5 +317,6 @@ function openForm() {
 
 .container-form {
   box-shadow: 0 -5px 20px rgb(69, 73, 112, 0.06);
+  touch-action: none;
 }
 </style>
