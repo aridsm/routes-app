@@ -32,15 +32,18 @@ const leftPosition = computed(() => {
       left: `${leftPosition}px`,
     }"
     ref="notificationEl"
-    class="text-base-0 w-full relative notification lg:w-80 rounded-md px-4 py-3"
+    class="text-base-0 w-full gap-3 flex relative notification lg:w-80 rounded-md px-4 py-3"
     :class="{
-      'bg-primary-3': notification.type === NotificationType.Success,
+      'bg-base-0 !text-base-300':
+        notification.type === NotificationType.Success,
       'bg-red-500': notification.type === NotificationType.Failure,
     }"
   >
-    <client-only>
-      <font-awesome-icon icon="fa-regular fa-circle-check" class="mr-2" />
-    </client-only>
+    <AppIcon
+      v-if="notification.type === NotificationType.Success"
+      icon="fa-regular fa-circle-check"
+    />
+    <AppIcon v-else icon="fa-regular fa-circle-xmark" />
     {{ notification.text }}
   </div>
 </template>

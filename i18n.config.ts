@@ -90,7 +90,7 @@ export default defineI18nConfig(() => ({
         meansOfLocomotion: "Meios de Locomoção",
         routes: "Rotas",
         addDestination: "Adicionar destino",
-        atLeastTwo: "Pelo menos duas coordenadas devem estar preenchidas",
+        atLeastTwo: "Ao menos duas coordenadas devem estar preenchidas",
         useCurrentLocation: "Usar localização atual",
         calculateRoute: "Calcular percurso",
         howToGetThere: "Como chegar",

@@ -57,16 +57,16 @@ function onBlur() {
       <div v-if="$slots.before" class="absolute z-10 w-10 h-10 lg:h-11">
         <slot name="before" />
       </div>
-      <client-only>
-        <font-awesome-icon
-          v-if="icon"
-          :icon="icon"
-          class="ml-4 absolute top-[14px] text-sm lg:text-base"
-          :class="{
-            'text-base-300/[.35]': !lazyValue,
-            'pl-10': $slots.before,
-          }"
-      /></client-only>
+
+      <AppIcon
+        v-if="icon"
+        :icon="icon"
+        class="ml-4 absolute top-[14px] text-sm lg:text-base"
+        :class="{
+          'text-base-300/[.35]': !lazyValue,
+          'pl-10': $slots.before,
+        }"
+      />
       <input
         type="text"
         v-model="lazyValue"

@@ -9,12 +9,10 @@ const { t } = useI18n();
     z-index="99999"
     content-class="w-full sm:w-[20rem] flex flex-col items-center"
   >
-    <client-only>
-      <font-awesome-icon
-        :icon="icon ? icon : 'fa-regular fa-hand'"
-        class="mb-4 text-xl lg:text-2xl"
-      />
-    </client-only>
+    <AppIcon
+      :icon="icon ? icon : 'fa-regular fa-hand'"
+      class="mb-4 text-xl lg:text-2xl"
+    />
     <span class="mb-4 text-center">
       {{ title || t("labels.continue") }}
     </span>

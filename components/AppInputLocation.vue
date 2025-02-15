@@ -1,10 +1,4 @@
 <script lang="tsx" setup>
-import {
-  useDraggable,
-  useElementBounding,
-  useMouseInElement,
-} from "@vueuse/core";
-
 const props = defineProps({
   destiny: {
     type: Object as PropType<Destiny>,
@@ -21,17 +15,6 @@ const emits = defineEmits<{
   (name: "delete"): void;
 }>();
 
-const draggingIndex = defineModel<number>("draggingIndex", {
-  required: true,
-});
-const hoveringIndex = defineModel<number>("hoveringIndex", {
-  required: true,
-});
-
-const hoveringBound = defineModel<number>("hoveringBound", {
-  required: true,
-});
-
 const { t } = useI18n();
 const showItems = ref(false);
 const searchResult = ref<any[]>([]);
@@ -41,58 +24,10 @@ const modelValue = ref<Destiny>(props.destiny);
 const rgLongitudeLatitude =
   /^(-?([1-8]?\d(\.\d+)?|90(\.0+)?)),\s*(-?((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
 
-const btnDrag = useTemplateRef<HTMLButtonElement>("btnDrag");
-const target = useTemplateRef<HTMLDivElement>("target");
-
-const { isOutside } = useMouseInElement(target);
-
-const { top, height } = useElementBounding(target);
-const boundTop = ref(top.value);
-const positionY = ref();
-
-const { isDragging } = useDraggable(btnDrag, {
-  onStart() {
-    boundTop.value = top.value;
-    draggingIndex.value = props.index;
-    hoveringIndex.value = -1;
-  },
-  onMove({ y }) {
-    positionY.value = y - boundTop.value;
-  },
-  onEnd() {
-    draggingIndex.value = -1;
-  },
-});
-
-watch(
-  () => isOutside.value,
-  () => {
-    if (!isOutside.value) {
-      hoveringIndex.value = props.index;
-      hoveringBound.value = top.value;
-    }
-  }
-);
-
-const styles = computed(
-  () =>
-    isDragging.value && {
-      opacity: 0.5,
-      border: "2px dashed #745AC3",
-    }
-);
-
 watch(
   () => props.destiny,
   () => {
     modelValue.value = props.destiny;
-  }
-);
-
-watch(
-  () => props.index,
-  () => {
-    boundTop.value = hoveringBound.value;
   }
 );
 
@@ -151,12 +86,7 @@ function onSelectItem(item: any) {
 
 <template>
   <div
-    ref="target"
-    class="relative target transition rounded-md border-2 border-transparent flex items-center"
-    :style="{
-      top: `${isDragging ? positionY : 0}px`,
-      ...styles,
-    }"
+    class="relative rounded-md border-2 border-transparent flex items-center"
   >
     <AppInputText
       v-model="modelValue.value"
@@ -168,12 +98,9 @@ function onSelectItem(item: any) {
     >
       <template #before>
         <button
-          ref="btnDrag"
-          class="bg-base-200 w-full h-full pt-[6px] text-sm lg:text-base cursor-grab rounded-l-md"
+          class="bg-base-200 w-full h-full text-sm lg:text-base cursor-grab rounded-l-md handle"
         >
-          <client-only>
-            <font-awesome-icon icon="fa-solid fa-grip-vertical" />
-          </client-only>
+          <AppIcon icon="fa-solid fa-grip-vertical" />
         </button>
       </template>
     </AppInputText>
@@ -193,9 +120,7 @@ function onSelectItem(item: any) {
       :content="modelValue.coords.join(', ')"
       :aria-label="modelValue.coords.join(', ')"
     >
-      <client-only>
-        <font-awesome-icon icon="fa-solid fa-map-pin" />
-      </client-only>
+      <AppIcon icon="fa-solid fa-map-pin" />
     </div>
 
     <button
@@ -204,7 +129,7 @@ function onSelectItem(item: any) {
       :title="t('buttons.delete')"
       @click="emits('delete')"
     >
-      <font-awesome-icon icon="fa-regular fa-trash-can" />
+      <AppIcon icon="fa-regular fa-trash-can" />
     </button>
 
     <div
@@ -226,9 +151,3 @@ function onSelectItem(item: any) {
     </div>
   </div>
 </template>
-
-<style scoped>
-.target {
-  touch-action: none;
-}
-</style>

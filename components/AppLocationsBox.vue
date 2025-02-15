@@ -1,55 +1,39 @@
 <script lang="tsx" setup>
-const props = defineProps({
-  destinies: {
-    type: Object as PropType<Destiny[]>,
-    required: true,
-  },
-});
+import Draggable from "vuedraggable";
 
-const draggingElIndex = ref(-1);
-const hoveringElIndex = ref(-1);
-const hoveringElBound = ref(0);
+const destinies = defineModel<Destiny[]>({ required: true });
+const draggingId = ref<number>();
+function onStart(e: any) {
+  draggingId.value = e.item.__draggable_context.element.id;
+}
 
-watch(
-  () => [draggingElIndex.value, hoveringElIndex.value],
-  () => {
-    if (
-      draggingElIndex.value >= 0 &&
-      hoveringElIndex.value >= 0 &&
-      draggingElIndex.value !== hoveringElIndex.value
-    ) {
-      const element = props.destinies.splice(draggingElIndex.value, 1);
-      props.destinies.splice(hoveringElIndex.value, 0, element[0]);
-      draggingElIndex.value = hoveringElIndex.value;
-    }
-  }
-);
+function onEnd() {
+  draggingId.value = undefined;
+}
 </script>
 
 <template>
-  <TransitionGroup name="list">
-    <AppInputLocation
-      v-for="(destiny, index) in destinies"
-      :key="destiny.id"
-      v-model:dragging-index="draggingElIndex"
-      v-model:hovering-index="hoveringElIndex"
-      v-model:hovering-bound="hoveringElBound"
-      :destiny="destiny"
-      @change="Object.assign(destiny, $event)"
-      class="flex-1 block"
-      :index="index"
-      @delete="destinies.splice(index, 1)"
-  /></TransitionGroup>
+  <Draggable
+    v-model="destinies"
+    :animation="200"
+    item-key="id"
+    handle=".handle"
+    group="destinies"
+    @start="onStart"
+    @end="onEnd"
+  >
+    <template #item="{ element, index }">
+      <AppInputLocation
+        :key="element.id"
+        :destiny="element"
+        @change="Object.assign(element, $event)"
+        class="flex-1 block mb-1"
+        :class="{
+          ' !border-primary-1 border-dashed': draggingId === element.id,
+        }"
+        :index="index"
+        @delete="destinies.splice(index, 1)"
+      />
+    </template>
+  </Draggable>
 </template>
-
-<style scoped>
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.2s ease;
-}
-.list-enter-from,
-.list-leave-to {
-  transform: translateY(50px) scale(30%);
-  opacity: 0;
-}
-</style>

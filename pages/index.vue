@@ -215,12 +215,7 @@ const styles = computed(() => {
           <button class="flex items-center gap-2" @click="open">
             {{ locale === "pt" ? "pt-BR" : "en-US" }}
 
-            <client-only>
-              <font-awesome-icon
-                icon="fa-solid fa-language"
-                class="ml-1 -mt-1 text-xl"
-              />
-            </client-only>
+            <AppIcon icon="fa-solid fa-language" class="ml-1 -mt-1 text-xl" />
           </button>
         </AppOptions>
       </div>
@@ -250,13 +245,13 @@ const styles = computed(() => {
             class="flex text-xs lg:text-base gap-4 items-center"
           >
             <div class="flex gap-2 items-center">
-              <font-awesome-icon icon="fa-solid fa-car-side" />
+              <AppIcon icon="fa-solid fa-car-side" />
               <span class="pt-1">
                 {{ convertMetersToKm(summary?.distance) }} km
               </span>
             </div>
             <div class="flex gap-2 items-center">
-              <font-awesome-icon icon="fa-regular fa-clock" />
+              <AppIcon icon="fa-regular fa-clock" />
               <span class="pt-1">
                 {{ convertTime(summary?.duration) }}
               </span>
@@ -286,17 +281,17 @@ const styles = computed(() => {
               class="p-1 mt-1 text-xl ml-2"
               :title="t('labels.myGithub')"
             >
-              <font-awesome-icon icon="fa-brands fa-github" />
+              <AppIcon icon="fa-brands fa-github" />
             </a>
           </div>
         </div>
       </header>
 
       <button
-        class="absolute right-4 bg-base-300/[.5] bottom-8 z-[999] w-12 h-12 flex items-center justify-center text-lg rounded-full"
+        class="absolute right-4 bg-base-300/[.5] bottom-8 z-[999] w-12 h-12 flex lg:hidden items-center justify-center text-lg rounded-full"
         @click="openForm"
       >
-        <font-awesome-icon icon="fa-solid fa-map-location-dot" />
+        <AppIcon icon="fa-solid fa-map-location-dot" />
       </button>
 
       <div

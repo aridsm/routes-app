@@ -24,6 +24,9 @@ const { confirm } = confirmDialogStore();
 const { addNotification } = useNotificationStore();
 const loading = ref(false);
 const { t, locale } = useI18n();
+const isScrolling = ref(false);
+const container = ref<HTMLDivElement>();
+const hasChanges = ref(false);
 
 watch(
   () => locale.value,
@@ -235,8 +238,6 @@ function setItem(item: Route) {
   emits("set-item", item);
 }
 
-const hasChanges = ref(false);
-
 watch(
   () => [routeForm.value, props.item],
   () => {
@@ -255,6 +256,14 @@ onBeforeRouteLeave(() => {
     if (!answer) return false;
   }
 });
+
+function onScroll(e: any) {
+  isScrolling.value = e.target.scrollTop > 0;
+}
+
+function onScrollTop() {
+  container.value?.scrollTo({ top: 0, behavior: "smooth" });
+}
 </script>
 
 <template>
@@ -267,16 +276,26 @@ onBeforeRouteLeave(() => {
         class="flex"
         @click="router.push(`/routes`)"
       >
-        <font-awesome-icon
-          icon="fa-solid fa-circle-chevron-left"
-          class="text-xl"
-        />
+        <AppIcon icon="fa-solid fa-circle-chevron-left" class="text-xl" />
       </button>
       <span class="pt-1">{{ props.item?.name }}</span>
     </div>
     <AppOptions :item="props.item" :options="options" />
   </div>
-  <div class="flex-1 overflow-auto flex flex-col gap-4 lg:gap-8 pb-4 lg:pb-8">
+  <div
+    ref="container"
+    class="flex-1 overflow-auto scroll-smooth flex relative flex-col gap-4 lg:gap-8 pb-4 lg:pb-8"
+    @scroll="onScroll"
+  >
+    <button
+      @click="onScrollTop"
+      class="bg-primary-1 text-base-0 btn-top transition z-0 opacity-0 sticky rounded-full -mb-[52px] !w-12 min-h-5 h-5 top-2"
+      :class="{
+        '!opacity-100 !z-[9999]': isScrolling,
+      }"
+    >
+      <AppIcon icon="fa-solid fa-chevron-up" />
+    </button>
     <section class="px-4 lg:px-6">
       <h2 class="font-bold tracking-wide mb-1 lg:mb-2">
         {{ t("labels.meansOfLocomotion") }}
@@ -293,9 +312,7 @@ onBeforeRouteLeave(() => {
           }"
           @click="() => onSelectLocomotion(locomotion.id)"
         >
-          <client-only>
-            <font-awesome-icon :icon="locomotion.icon" />
-          </client-only>
+          <AppIcon :icon="locomotion.icon" />
         </button>
       </div>
     </section>
@@ -318,17 +335,15 @@ onBeforeRouteLeave(() => {
           :disabled="routeForm.destinies.length > 5"
           :content="t('labels.addDestination')"
         >
-          <client-only>
-            <font-awesome-icon
-              icon="fa-solid fa-circle-plus"
-              class="!text-primary-1 text-xl"
-            />
-          </client-only>
+          <AppIcon
+            icon="fa-solid fa-circle-plus"
+            class="!text-primary-1 text-xl"
+          />
         </AppBtn>
       </div>
 
       <div class="flex flex-col gap-2 lg:gap-3">
-        <AppLocationsBox :destinies="routeForm.destinies" />
+        <AppLocationsBox v-model="routeForm.destinies" />
       </div>
       <p v-if="disabledCalculateRoute" class="lg:text-sm mt-1 text-red-600">
         {{ t("labels.atLeastTwo") }}
@@ -338,24 +353,27 @@ onBeforeRouteLeave(() => {
         class="flex justify-between items-center flex-col lg:flex-row gap-3 mt-3"
       >
         <button
-          class="bg-primary-1/[.1] rounded-full px-6 text-primary-1 hover:bg-primary-1/[.2] active:hover:bg-primary-1/[.3] pb-1 pt-2 text-sm lg:text-sm gap-3 flex"
+          class="bg-primary-1/[.1] rounded-full px-6 text-primary-1 hover:bg-primary-1/[.2] active:hover:bg-primary-1/[.3] pb-1 pt-2 text-sm lg:text-sm gap-3 items-center flex"
           @click="() => setCurrentLocation()"
         >
-          <font-awesome-icon icon="fa-solid fa-map-pin" />
+          <AppIcon icon="fa-solid fa-map-pin" class="mb-1" />
           {{ t("labels.useCurrentLocation") }}
         </button>
         <AppBtn
           @click="() => getRoutes()"
           :disabled="disabledCalculateRoute"
-          class="w-full lg:w-auto"
+          class="w-full lg:w-auto flex items-center justify-center"
         >
-          <font-awesome-icon icon="fa-solid fa-signs-post" class="mr-2" />
+          <AppIcon icon="fa-solid fa-signs-post" class="mr-2" />
           {{ t("labels.calculateRoute") }}
         </AppBtn>
       </div>
     </section>
     <AppLoading v-if="loading" class="flex-1" />
-    <section v-if="segments && currentDestinies.length" class="px-4 lg:px-6">
+    <section
+      v-if="segments && currentDestinies.length"
+      class="px-4 lg:px-6 relative"
+    >
       <h2 class="font-bold tracking-wide mb-2">
         {{ t("labels.howToGetThere") }}
       </h2>
@@ -379,10 +397,11 @@ onBeforeRouteLeave(() => {
               <div class="flex gap-3 lg:gap-4 items-center font-bold">
                 <p>{{ currentDestinies[index].value }}</p>
 
-                <font-awesome-icon
+                <AppIcon
                   icon="fa-solid fa-chevron-right"
                   class="text-sm mb-1"
                 />
+
                 <p>{{ currentDestinies[index + 1].value }}</p>
               </div>
               <div>
@@ -390,7 +409,8 @@ onBeforeRouteLeave(() => {
                 {{ convertTime(segment.duration) }}
               </div>
             </div>
-            <font-awesome-icon
+
+            <AppIcon
               icon="fa-solid fa-chevron-left"
               class="transition"
               :class="{
@@ -417,7 +437,7 @@ onBeforeRouteLeave(() => {
       </ul>
     </section>
   </div>
-  <div v-if="props.item" class="flex w-full p-4 lg:p-6 gap-2">
+  <div v-if="props.item" class="flex w-full p-4 lg:px-6 lg:pb-4 gap-2">
     <AppBtn
       icon
       class="!w-[44px] !min-w-[44px] !h-full !bg-primary-2"
@@ -425,7 +445,7 @@ onBeforeRouteLeave(() => {
       @click="assignLastRouteData"
       :title="t('buttons.restore')"
     >
-      <font-awesome-icon icon="fa-solid fa-arrow-rotate-left" />
+      <AppIcon icon="fa-solid fa-arrow-rotate-left" />
     </AppBtn>
     <AppBtn class="flex-1" :disabled="!hasChanges" @click="onSaveRoute">
       {{ t("buttons.save") }}
@@ -456,5 +476,9 @@ onBeforeRouteLeave(() => {
 .v-leave-to {
   transform: translateY(-50%);
   opacity: 0;
+}
+
+.btn-top {
+  left: calc(50% - 24px);
 }
 </style>
