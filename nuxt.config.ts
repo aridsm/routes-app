@@ -27,7 +27,7 @@ export default defineNuxtConfig({
       name: "Routes PWA",
       short_name: "Routes PWA",
       description: "Search for routes using Leaftet and OpenRouteService",
-      theme_color: "#745AC3",
+      theme_color: "#E8E5F2",
       background_color: "#E8E5F2",
       display: "standalone",
       start_url: "/",
