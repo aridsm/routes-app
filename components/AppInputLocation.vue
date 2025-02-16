@@ -106,17 +106,11 @@ function onSelectItem(item: any) {
     </AppInputText>
     <div
       v-if="loading"
-      class="absolute right-3 top-3 lg:top-[14px] border-2 border-primary-1 border-t-transparent animate-spin w-4 h-4 rounded-full"
-      :class="{
-        '!right-14': index >= 2,
-      }"
+      class="absolute right-14 top-3 lg:top-[14px] border-2 border-primary-1 border-t-transparent animate-spin w-4 h-4 rounded-full"
     />
     <div
       v-else-if="modelValue.coords.length"
-      class="tooltip absolute right-3 top-[6px] lg:top-2 w-7 h-7 text-sm lg:text-base rounded-full bg-base-100 hover:bg-base-200 flex items-center justify-center"
-      :class="{
-        '!right-14': index >= 2,
-      }"
+      class="tooltip absolute right-14 top-[6px] lg:top-2 w-7 h-7 text-sm lg:text-base rounded-full bg-base-100 hover:bg-base-200 flex items-center justify-center"
       :content="modelValue.coords.join(', ')"
       :aria-label="modelValue.coords.join(', ')"
     >
@@ -124,7 +118,6 @@ function onSelectItem(item: any) {
     </div>
 
     <button
-      v-if="index >= 2"
       class="w-9 h-9 ml-2 rounded-full hover:bg-base-100 text-base flex items-center justify-center"
       :title="t('buttons.delete')"
       @click="emits('delete')"

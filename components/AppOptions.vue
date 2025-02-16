@@ -38,7 +38,7 @@ const styles = computed(() => {
 </script>
 
 <template>
-  <div>
+  <div class="relative">
     <div ref="activator">
       <slot :open="openOptions">
         <button
@@ -57,7 +57,7 @@ const styles = computed(() => {
       <ul
         v-if="optionsShown"
         ref="list"
-        class="absolute transition z-[9999] !text-base-300 bg-base-0 rounded-md options-container overflow-hidden"
+        class="absolute transition z-[999999] !text-base-300 bg-base-0 rounded-md options-container overflow-hidden"
         :style="styles"
       >
         <li
