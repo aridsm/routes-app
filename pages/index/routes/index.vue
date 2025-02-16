@@ -77,8 +77,11 @@ function addNewRoute() {
     <p v-if="!routes.length" class="text-base-300/[.7] text-center py-4 flex-1">
       {{ t("labels.noRouteAdded") }}
     </p>
-    <AppBtn class="mx-4 lg:mx-6" @click="() => addNewRoute()">
-      <AppIcon icon="fa-solid fa-circle-plus" class="mr-2" />
+    <AppBtn
+      class="mx-4 lg:mx-6 flex items-center justify-center gap-2 leading-none"
+      @click="() => addNewRoute()"
+    >
+      <AppIcon icon="fa-solid fa-circle-plus" class="mb-1" />
       {{ t("labels.addRoute") }}
     </AppBtn>
 
