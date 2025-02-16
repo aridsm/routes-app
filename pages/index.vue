@@ -12,7 +12,6 @@ const { setLocale, locale, t } = useI18n();
 
 const polylines = ref<Layer>();
 const circlePoints = ref<CircleMarker[]>([]);
-const summary = ref<Summary>();
 const loading = ref(false);
 
 onMounted(async () => {
@@ -222,7 +221,6 @@ const styles = computed(() => {
       <NuxtPage
         @set-polyline="(coords) => drawPolyline(coords)"
         @set-points="(points, destinies) => drawPoints(points, destinies)"
-        @set-summary="($event) => (summary = $event)"
       />
     </div>
     <div class="bg-base-300 relative flex-1 text-base-0 flex flex-col pb-0">
@@ -240,7 +238,7 @@ const styles = computed(() => {
             {{ t("header.insert") }}
           </p>
 
-          <div
+          <!-- <div
             v-if="summary"
             class="flex text-xs lg:text-base gap-4 items-center"
           >
@@ -256,11 +254,11 @@ const styles = computed(() => {
                 {{ convertTime(summary?.duration) }}
               </span>
             </div>
-          </div>
+          </div> -->
 
-          <AppOptions :options="menuOptions" class="ml-2 2xl:hidden" />
+          <AppOptions :options="menuOptions" class="ml-auto 2xl:hidden" />
 
-          <div class="hidden 2xl:flex items-center">
+          <div class="hidden 2xl:flex items-center ml-auto">
             <a
               href="https://leafletjs.com/"
               target="_blank"

@@ -11,7 +11,6 @@ const props = defineProps({
 const emits = defineEmits<{
   (name: "set-polyline", polyline: any): void;
   (name: "set-points", points: any, destinies: Destiny[]): void;
-  (name: "set-summary", summary: Summary): void;
   (name: "set-item", data: Route): void;
 }>();
 
@@ -19,6 +18,7 @@ const L = inject("L");
 const router = useRouter();
 const segments = ref<Segment[]>();
 const currentDestinies = ref<Destiny[]>([]);
+const summary = ref<Summary>();
 const { deleteRoute, saveRoute, getRouteById } = useSavedRoutesStore();
 const { confirm } = confirmDialogStore();
 const { addNotification } = useNotificationStore();
@@ -131,7 +131,7 @@ async function getRoutes() {
         )
       );
       emits("set-polyline", polyline);
-      emits("set-summary", features.properties.summary);
+      summary.value = features.properties.summary;
       emits("set-points", coords, routeForm.value.destinies);
     })
     .catch((err: any) => {
@@ -284,7 +284,7 @@ function onScrollTop() {
   </div>
   <div
     ref="container"
-    class="flex-1 overflow-auto scroll-smooth flex relative flex-col gap-4 lg:gap-8 pb-4 lg:pb-8"
+    class="flex-1 overflow-auto scroll-smooth flex relative flex-col gap-4 lg:gap-8"
     @scroll="onScroll"
   >
     <button
@@ -377,6 +377,23 @@ function onScrollTop() {
       <h2 class="font-bold tracking-wide mb-2">
         {{ t("labels.howToGetThere") }}
       </h2>
+      <div
+        v-if="summary"
+        class="flex justify-center bg-base-100 rounded-md px-4 py-2 text-base-300 text-xs lg:text-base gap-4 items-center"
+      >
+        <div class="flex gap-2 items-center">
+          <AppIcon icon="fa-solid fa-car-side" />
+          <span class="pt-1">
+            {{ convertMetersToKm(summary.distance) }} km
+          </span>
+        </div>
+        <div class="flex gap-2 items-center">
+          <AppIcon icon="fa-regular fa-clock" />
+          <span class="pt-1">
+            {{ convertTime(summary.duration) }}
+          </span>
+        </div>
+      </div>
       <ul
         v-for="(segment, index) in segments"
         :key="segment.distance"
