@@ -379,7 +379,7 @@ function onScrollTop() {
       </h2>
       <div
         v-if="summary"
-        class="flex justify-center bg-base-100 rounded-md px-4 py-2 text-base-300 text-xs lg:text-base gap-4 items-center"
+        class="flex justify-center bg-base-100 rounded-md px-4 py-2 text-base-300 gap-4 items-center"
       >
         <div class="flex gap-2 items-center">
           <AppIcon icon="fa-solid fa-car-side" />
