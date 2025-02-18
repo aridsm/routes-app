@@ -1,5 +1,5 @@
 <script lang="tsx" setup>
-import { useDraggable, useElementBounding } from "@vueuse/core";
+import { useDraggable } from "@vueuse/core";
 import type { CircleMarker, LatLngExpression, Layer, Map } from "leaflet";
 import type Leaflet from "leaflet";
 
@@ -12,6 +12,7 @@ const { setLocale, locale, t } = useI18n();
 
 const polylines = ref<Layer>();
 const circlePoints = ref<CircleMarker[]>([]);
+const windowLoaded = computed(() => !window?.undefined);
 const loading = ref(false);
 
 onMounted(async () => {
@@ -34,8 +35,6 @@ async function loadMap() {
   map.value?.on("dragend", () => {
     map.value?.fitBounds(map.value.getBounds());
   });
-
-  // map.value?.on("click", (e) => {});
 
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
@@ -141,7 +140,6 @@ const formShown = ref(false);
 const largeScreen = ref(true);
 const posY = ref(0);
 const initialTop = 128;
-const maxTop = 480;
 
 function openForm() {
   formShown.value = true;
@@ -152,7 +150,7 @@ const { y, isDragging } = useDraggable(btnDrag, {
     posY.value = position.y;
   },
   onEnd(position) {
-    if (position.y > maxTop) {
+    if (position.y - initialTop > 140) {
       formShown.value = false;
     }
     posY.value = 0;
@@ -173,11 +171,6 @@ onMounted(() => {
 });
 
 const styles = computed(() => {
-  if (largeScreen.value) {
-    return {
-      top: 0,
-    };
-  }
   if (formShown.value) {
     return isDragging.value && posY.value > initialTop
       ? {
@@ -187,11 +180,15 @@ const styles = computed(() => {
           top: `${initialTop}px`,
           transition: "all 0.2s ease",
         };
+  } else if (largeScreen.value) {
+    return {
+      top: 0,
+    };
   }
+
   return {
-    transform: "translateY(100%)",
     transition: "all 0.2s ease",
-    top: `${maxTop}px`,
+    top: "100%",
   };
 });
 </script>
@@ -199,8 +196,8 @@ const styles = computed(() => {
 <template>
   <div class="flex flex-1 overflow-hidden min-h-0 relative">
     <div
-      class="w-screen top-full rounded-t-2xl container-form pb-32 lg:pb-0 z-[9999] absolute bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
-      :style="styles"
+      class="w-screen rounded-t-2xl container-form pb-32 lg:pb-0 z-[9999] absolute bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
+      :style="windowLoaded ? styles : undefined"
     >
       <button
         ref="btnDrag"

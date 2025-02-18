@@ -250,7 +250,8 @@ watch(
   }
 );
 
-onBeforeRouteLeave(() => {
+onBeforeRouteLeave((e) => {
+  console.log(e);
   if (hasChanges.value && !!getRouteById(routeForm.value.id!)) {
     const answer = window.confirm(t("labels.confirmExit"));
     if (!answer) return false;
@@ -289,7 +290,7 @@ function onScrollTop() {
   >
     <button
       @click="onScrollTop"
-      class="bg-primary-1 text-base-0 btn-top transition z-0 opacity-0 sticky rounded-full -mb-[52px] !w-12 min-h-5 h-5 top-2"
+      class="bg-primary-1 text-base-0 btn-top transition z-0 opacity-0 sticky rounded-full -mb-9 lg:-mb-[52px] !w-12 min-h-5 h-5 top-2"
       :class="{
         '!opacity-100 !z-[9999]': isScrolling,
       }"

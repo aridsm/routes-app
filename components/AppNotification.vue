@@ -4,6 +4,7 @@ const { notifications } = storeToRefs(useNotificationStore());
 
 <template>
   <div
+    v-if="notifications?.length"
     class="absolute overflow-hidden top-4 lg:top-[initial] pb-4 lg:right-4 lg:bottom-4 z-[9999] flex flex-col gap-2 px-4 lg:px-0 w-full lg:w-fit"
   >
     <TransitionGroup name="list">

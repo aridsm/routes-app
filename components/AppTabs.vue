@@ -18,10 +18,13 @@ const props = defineProps({
 
 const activeTab = defineModel({ required: true });
 
-function onClickTab(tab: Tab) {
-  activeTab.value = tab.id;
+async function onClickTab(tab: Tab) {
   if (tab.route) {
-    router.push(tab.route);
+    await router.push(tab.route).then((e) => {
+      if (e?.name !== "Error") activeTab.value = tab.id;
+    });
+  } else {
+    activeTab.value = tab.id;
   }
 }
 
@@ -39,7 +42,7 @@ onMounted(() => {
     <button
       v-for="tab in tabs"
       :key="tab.id"
-      class="rounded-full px-4 lg:px-8 h-6 lg:h-7 pt-1 hover:bg-base-100 transition"
+      class="rounded-full px-4 lg:px-8 h-6 lg:h-7 pt-1 lg:hover:bg-base-100 transition"
       :class="{
         'bg-primary-1 text-base-0 hover:!bg-primary-1 ': activeTab === tab.id,
       }"
