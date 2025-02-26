@@ -98,7 +98,7 @@ function onSelectItem(item: any) {
     >
       <template #before>
         <button
-          class="bg-base-200 w-full h-full text-sm lg:text-base cursor-grab rounded-l-md handle"
+          class="bg-base-100 w-full h-full text-sm lg:text-base cursor-grab rounded-l-md handle"
         >
           <AppIcon icon="fa-solid fa-grip-vertical" />
         </button>
@@ -110,15 +110,15 @@ function onSelectItem(item: any) {
     />
     <div
       v-else-if="modelValue.coords.length"
-      class="tooltip absolute right-14 top-[6px] lg:top-2 w-7 h-7 text-sm lg:text-base rounded-full bg-base-100 hover:bg-base-200 flex items-center justify-center"
-      :content="modelValue.coords.join(', ')"
+      class="tooltip absolute right-12 top-[9px] gap-3 pt-1 h-7 px-3 text-sm rounded-full bg-primary-1/[.1] text-primary-4 flex items-center justify-center"
       :aria-label="modelValue.coords.join(', ')"
     >
-      <AppIcon icon="fa-solid fa-map-pin" />
+      {{ modelValue.coords.join(", ") }}
+      <!-- <AppIcon icon="fa-solid fa-map-pin" class="pb-1" /> -->
     </div>
 
     <button
-      class="w-9 h-9 ml-2 rounded-full hover:bg-base-100 text-base flex items-center justify-center"
+      class="w-9 h-9 absolute top-1 right-2 rounded-full text-red-500 hover:bg-base-0 text-base flex items-center justify-center"
       :title="t('buttons.delete')"
       @click="emits('delete')"
     >

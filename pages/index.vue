@@ -27,7 +27,7 @@ async function loadMap() {
       longitude: number;
       latitude: number;
     } = await getUserPosition();
-    map.value = L.map("map").setView([coords.latitude, coords.longitude], 13);
+    map.value = L.map("map").setView([coords.latitude, coords.longitude], 12);
   } catch (err: any) {
     map.value = L.map("map").setView([-14.235, -50], 4);
   }
@@ -220,8 +220,8 @@ const styles = computed(() => {
         @set-points="(points, destinies) => drawPoints(points, destinies)"
       />
     </div>
-    <div class="bg-base-300 relative flex-1 text-base-0 flex flex-col pb-0">
-      <header class="bg-primary-2 h-12 lg:h-16 flex">
+    <div class="bg-base-300 relative flex-1 flex flex-col pb-0">
+      <!-- <header class="bg-primary-2 h-12 lg:h-16 flex">
         <h1
           class="bg-primary-3 px-4 lg:px-12 pt-1 text-sm lg:text-xl tracking-wider font-bold flex items-center"
         >
@@ -234,24 +234,6 @@ const styles = computed(() => {
           >
             {{ t("header.insert") }}
           </p>
-
-          <!-- <div
-            v-if="summary"
-            class="flex text-xs lg:text-base gap-4 items-center"
-          >
-            <div class="flex gap-2 items-center">
-              <AppIcon icon="fa-solid fa-car-side" />
-              <span class="pt-1">
-                {{ convertMetersToKm(summary?.distance) }} km
-              </span>
-            </div>
-            <div class="flex gap-2 items-center">
-              <AppIcon icon="fa-regular fa-clock" />
-              <span class="pt-1">
-                {{ convertTime(summary?.duration) }}
-              </span>
-            </div>
-          </div> -->
 
           <AppOptions :options="menuOptions" class="ml-auto 2xl:hidden" />
 
@@ -281,13 +263,18 @@ const styles = computed(() => {
           </div>
         </div>
       </header>
-
+-->
       <button
         class="absolute right-4 bg-base-300/[.5] bottom-8 z-[999] w-12 h-12 flex lg:hidden items-center justify-center text-lg rounded-full"
         @click="openForm"
       >
         <AppIcon icon="fa-solid fa-map-location-dot" />
       </button>
+
+      <AppOptions
+        :options="menuOptions"
+        class="ml-auto !absolute top-4 right-4 z-[9999] bg-base-0 rounded-full"
+      />
 
       <div
         id="map"

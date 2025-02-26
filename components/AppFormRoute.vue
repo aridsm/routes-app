@@ -302,13 +302,13 @@ function onScrollTop() {
         {{ t("labels.meansOfLocomotion") }}
       </h2>
 
-      <div class="flex gap-2 lg:gap-3 w-full">
+      <div class="flex justify-center gap-2 lg:gap-3 w-full">
         <button
           v-for="locomotion in locomotions"
           :key="locomotion.id"
-          class="flex-1 bg-base-100 rounded-md h-9 lg:h-11 flex items-center justify-center text-base lg:text-xl hover:bg-base-200"
+          class="bg-white border border-base-100 w-24 rounded-md h-9 lg:h-11 flex items-center justify-center text-base lg:text-xl hover:border-base-200 hover:bg-base-0"
           :class="{
-            '!bg-primary-2 !text-base-0':
+            '!bg-primary-2 !border-primary-3 !text-white':
               routeForm.locomotion === locomotion.id,
           }"
           @click="() => onSelectLocomotion(locomotion.id)"
@@ -319,6 +319,12 @@ function onScrollTop() {
     </section>
 
     <section class="px-4 lg:px-6">
+      <p
+        v-if="disabledCalculateRoute"
+        class="mt-1 bg-red-400/[.1] text-center mb-4 rounded-md px-4 py-3 pt-4 border border-red-400/[.3] text-red-500"
+      >
+        {{ t("labels.atLeastTwo") }}
+      </p>
       <div class="flex justify-between mb-1 lg:mb-2 items-center">
         <h2 class="font-bold tracking-wide">{{ t("labels.routes") }}</h2>
         <AppBtn
@@ -346,10 +352,6 @@ function onScrollTop() {
       <div class="flex flex-col gap-2 lg:gap-3">
         <AppLocationsBox v-model="routeForm.destinies" />
       </div>
-      <p v-if="disabledCalculateRoute" class="lg:text-sm mt-1 text-red-600">
-        {{ t("labels.atLeastTwo") }}
-      </p>
-
       <div
         class="flex justify-between items-center flex-col lg:flex-row gap-3 mt-3"
       >
@@ -375,24 +377,26 @@ function onScrollTop() {
       v-if="segments && currentDestinies.length"
       class="px-4 lg:px-6 relative"
     >
-      <h2 class="font-bold tracking-wide mb-2">
-        {{ t("labels.howToGetThere") }}
-      </h2>
-      <div
-        v-if="summary"
-        class="flex justify-center bg-base-100 rounded-md px-4 py-2 text-base-300 gap-4 items-center"
-      >
-        <div class="flex gap-2 items-center">
-          <AppIcon icon="fa-solid fa-car-side" />
-          <span class="pt-1">
-            {{ convertMetersToKm(summary.distance) }} km
-          </span>
-        </div>
-        <div class="flex gap-2 items-center">
-          <AppIcon icon="fa-regular fa-clock" />
-          <span class="pt-1">
-            {{ convertTime(summary.duration) }}
-          </span>
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="font-bold tracking-wide">
+          {{ t("labels.howToGetThere") }}
+        </h2>
+        <div
+          v-if="summary"
+          class="flex justify-center text-base-300 gap-4 items-center"
+        >
+          <div class="flex gap-2 items-center">
+            <AppIcon icon="fa-solid fa-car-side" />
+            <span class="pt-1">
+              {{ convertMetersToKm(summary.distance) }} km
+            </span>
+          </div>
+          <div class="flex gap-2 items-center">
+            <AppIcon icon="fa-regular fa-clock" />
+            <span class="pt-1">
+              {{ convertTime(summary.duration) }}
+            </span>
+          </div>
         </div>
       </div>
       <ul
@@ -404,14 +408,21 @@ function onScrollTop() {
           <button
             class="flex justify-between bg-base-100 z-10 relative items-center gap-4 p-4 pr-6 w-full transition"
             :class="{
-              'bg-primary-2 text-base-0': segment.show,
+              'bg-base-200 ': segment.show,
             }"
             @click="() => (segment.show = !segment.show)"
           >
             <div class="w-full text-start flex flex-col gap-1">
-              <span class="text-sm lg:text-sm block opacity-80">
-                {{ t("labels.path") }} {{ index + 1 }}
-              </span>
+              <div class="flex justify-between items-center opacity-80 mb-1">
+                <span class="text-sm lg:text-sm block">
+                  {{ t("labels.path") }} {{ index + 1 }}
+                </span>
+
+                <div>
+                  {{ convertMetersToKm(segment.distance) }} km |
+                  {{ convertTime(segment.duration) }}
+                </div>
+              </div>
               <div class="flex gap-3 lg:gap-4 items-center font-bold">
                 <p>{{ currentDestinies[index].value }}</p>
 
@@ -421,20 +432,15 @@ function onScrollTop() {
                 />
 
                 <p>{{ currentDestinies[index + 1].value }}</p>
-              </div>
-              <div>
-                {{ convertMetersToKm(segment.distance) }} km |
-                {{ convertTime(segment.duration) }}
+                <AppIcon
+                  icon="fa-solid fa-chevron-left"
+                  class="transition ml-auto mb-1"
+                  :class="{
+                    '-rotate-90': segment.show,
+                  }"
+                />
               </div>
             </div>
-
-            <AppIcon
-              icon="fa-solid fa-chevron-left"
-              class="transition"
-              :class="{
-                '-rotate-90': segment.show,
-              }"
-            />
           </button>
 
           <Transition>
