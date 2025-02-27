@@ -171,7 +171,7 @@ onMounted(() => {
 });
 
 const styles = computed(() => {
-  if (formShown.value) {
+  if (formShown.value && !largeScreen.value) {
     return isDragging.value && posY.value > initialTop
       ? {
           top: `${posY.value}px`,
@@ -201,6 +201,7 @@ const styles = computed(() => {
     >
       <button
         ref="btnDrag"
+        :aria-label="t('buttons.openForm')"
         class="h-9 lg:hidden w-full cursor-grab flex justify-center items-center"
       >
         <div class="w-7 h-1 bg-base-200 rounded-lg mx-a" />
@@ -267,6 +268,7 @@ const styles = computed(() => {
       <button
         class="absolute right-4 bg-base-300/[.5] bottom-8 z-[999] w-12 h-12 flex lg:hidden items-center justify-center text-lg rounded-full"
         @click="openForm"
+        :aria-label="t('buttons.drag')"
       >
         <AppIcon icon="fa-solid fa-map-location-dot" />
       </button>

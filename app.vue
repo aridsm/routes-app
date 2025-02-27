@@ -1,7 +1,26 @@
 <script setup lang="tsx">
-useHead({
-  link: [{ rel: "manifest", href: "manifest.json" }],
-});
+const { locale, t } = useI18n();
+
+watch(
+  () => locale.value,
+  () => {
+    useHead({
+      link: [{ rel: "manifest", href: "manifest.json" }],
+      meta: [
+        {
+          name: "description",
+          content: t("description"),
+        },
+      ],
+      htmlAttrs: {
+        lang: locale.value,
+      },
+    });
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <template>

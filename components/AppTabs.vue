@@ -19,13 +19,16 @@ const props = defineProps({
 const activeTab = defineModel({ required: true });
 
 async function onClickTab(tab: Tab) {
-  if (tab.route) {
+  /* if (tab.route) {
     await router.push(tab.route).then((e) => {
       if (e?.name !== "Error") activeTab.value = tab.id;
     });
   } else {
     activeTab.value = tab.id;
   }
+    */
+  router.push(tab.route!);
+  activeTab.value = tab.id;
 }
 
 onMounted(() => {

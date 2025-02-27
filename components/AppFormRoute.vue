@@ -294,6 +294,7 @@ function onScrollTop() {
       :class="{
         '!opacity-100 !z-[9999]': isScrolling,
       }"
+      :aria-label="t('buttons.scrollTop')"
     >
       <AppIcon icon="fa-solid fa-chevron-up" />
     </button>
@@ -312,6 +313,7 @@ function onScrollTop() {
               routeForm.locomotion === locomotion.id,
           }"
           @click="() => onSelectLocomotion(locomotion.id)"
+          :title="locomotion.text"
         >
           <AppIcon :icon="locomotion.icon" />
         </button>
@@ -337,15 +339,12 @@ function onScrollTop() {
               })
           "
           icon
-          transparent
-          class="tooltip relative"
+          class="tooltip relative !rounded-full"
           :disabled="routeForm.destinies.length > 5"
           :content="t('labels.addDestination')"
+          :title="t('labels.addDestination')"
         >
-          <AppIcon
-            icon="fa-solid fa-circle-plus"
-            class="!text-primary-1 text-xl"
-          />
+          <AppIcon icon="fa-solid fa-plus" class="!text-base-0 text-sm" />
         </AppBtn>
       </div>
 
@@ -375,7 +374,7 @@ function onScrollTop() {
     <AppLoading v-if="loading" class="flex-1" />
     <section
       v-if="segments && currentDestinies.length"
-      class="px-4 lg:px-6 relative"
+      class="px-4 lg:px-6 relative pb-6"
     >
       <div class="flex justify-between items-center mb-2">
         <h2 class="font-bold tracking-wide">
@@ -388,13 +387,13 @@ function onScrollTop() {
           <div class="flex gap-2 items-center">
             <AppIcon icon="fa-solid fa-car-side" />
             <span class="pt-1">
-              {{ convertMetersToKm(summary.distance) }} km
+              {{ convertMetersToKm(summary.distance || 0) }} km
             </span>
           </div>
           <div class="flex gap-2 items-center">
             <AppIcon icon="fa-regular fa-clock" />
             <span class="pt-1">
-              {{ convertTime(summary.duration) }}
+              {{ convertTime(summary.duration || 0) }}
             </span>
           </div>
         </div>
@@ -411,6 +410,7 @@ function onScrollTop() {
               'bg-base-200 ': segment.show,
             }"
             @click="() => (segment.show = !segment.show)"
+            :aria-label="t('buttons.showPath')"
           >
             <div class="w-full text-start flex flex-col gap-1">
               <div class="flex justify-between items-center opacity-80 mb-1">

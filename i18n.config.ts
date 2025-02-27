@@ -3,6 +3,8 @@ export default defineI18nConfig(() => ({
   locale: "pt",
   messages: {
     en: {
+      description:
+        "Display routes with Leaflet from locations provided by the OpenRouteService api ",
       header: {
         insert: "Enter at least two locations to calculate the route",
       },
@@ -16,6 +18,11 @@ export default defineI18nConfig(() => ({
         back: "Back",
         save: "Save changes",
         restore: "Restore modifications",
+        scrollTop: "Scroll to top",
+        showPath: "Show path",
+        move: "move",
+        drag: "Drag",
+        openForm: "Open form",
       },
       errors: {
         errorGetRoutes:
@@ -53,7 +60,7 @@ export default defineI18nConfig(() => ({
         create: "Create route",
         loading: "Loading...",
         typeAvalue: "Enter a value",
-        location: "Location",
+        location: "Location or coordinate",
         noResults: "No results",
         confirm: "Confirm",
         continue: "Do you want to continue?",
@@ -61,6 +68,8 @@ export default defineI18nConfig(() => ({
       },
     },
     pt: {
+      description:
+        "Exiba rotas com Leaflet a partir de localizações fornecidas pela api OpenRouteService",
       header: {
         insert: "Insira pelo menos duas localizações para calcular o percurso",
       },
@@ -74,6 +83,11 @@ export default defineI18nConfig(() => ({
         back: "Voltar",
         save: "Salvar alterações",
         restore: "Restaurar modificações",
+        scrollTop: "Ir para o topo",
+        showPath: "Exibir rota",
+        move: "mover",
+        drag: "Arrastar",
+        openForm: "Abrir formulário",
       },
       errors: {
         errorGetRoutes:
@@ -110,7 +124,7 @@ export default defineI18nConfig(() => ({
         create: "Criar rota",
         loading: "Carregando...",
         typeAvalue: "Digite...",
-        location: "Localização",
+        location: "Localização ou coordenada",
         noResults: "Nenhum resultado",
         confirm: "Confirmar",
         continue: "Deseja continuar?",

@@ -92,13 +92,14 @@ function onSelectItem(item: any) {
       v-model="modelValue.value"
       icon="fa-solid fa-location-dot"
       class="flex-1"
-      :input-classes="modelValue.coords.length || loading ? 'pr-10' : ''"
+      :input-classes="modelValue.coords.length || loading ? '!pr-20' : '!pr-12'"
       :placeholder="t('labels.location')"
       @debounce="onUpdateDestiny"
     >
       <template #before>
         <button
           class="bg-base-100 w-full h-full text-sm lg:text-base cursor-grab rounded-l-md handle"
+          :aria-label="t('buttons.move')"
         >
           <AppIcon icon="fa-solid fa-grip-vertical" />
         </button>
@@ -110,17 +111,20 @@ function onSelectItem(item: any) {
     />
     <div
       v-else-if="modelValue.coords.length"
-      class="tooltip absolute right-12 top-[9px] gap-3 pt-1 h-7 px-3 text-sm rounded-full bg-primary-1/[.1] text-primary-4 flex items-center justify-center"
+      class="tooltip absolute right-12 top-[9px] pt-1 h-7 px-3 text-sm rounded-full bg-violet-100 text-primary-4 flex items-center justify-center"
       :aria-label="modelValue.coords.join(', ')"
     >
-      {{ modelValue.coords.join(", ") }}
-      <!-- <AppIcon icon="fa-solid fa-map-pin" class="pb-1" /> -->
+      <span class="!w-0 absolute overflow-hidden mr-3 transition">
+        {{ modelValue.coords.join(", ") }}
+      </span>
+      <AppIcon icon="fa-solid fa-map-pin" class="text-xs mb-1" />
     </div>
 
     <button
       class="w-9 h-9 absolute top-1 right-2 rounded-full text-red-500 hover:bg-base-0 text-base flex items-center justify-center"
       :title="t('buttons.delete')"
       @click="emits('delete')"
+      :aria-label="t('buttons.delete')"
     >
       <AppIcon icon="fa-regular fa-trash-can" />
     </button>
@@ -144,3 +148,9 @@ function onSelectItem(item: any) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.tooltip:hover > span {
+  @apply !w-full relative overflow-auto;
+}
+</style>

@@ -19,6 +19,11 @@ export default defineNuxtConfig({
   ],
   i18n: {
     vueI18n: "./i18n.config.ts",
+    // locales: [
+    //   { code: "en", iso: "en-US", name: "English" },
+    //   { code: "pt", iso: "pt-BR", name: "Português" },
+    // ],
+    // defaultLocale: "pt",
   },
   modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@vite-pwa/nuxt"],
   pwa: {
@@ -211,6 +216,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      title: "Routes APP",
       link: [
         {
           rel: "icon",
