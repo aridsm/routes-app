@@ -5,7 +5,7 @@ export default {
       colors: {
         base: {
           0: "#F6F6F6",
-          100: "#E8E5F2",
+          100: "#EAEAF1",
           200: "#DFDBEB",
           300: "#454970",
         },

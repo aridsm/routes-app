@@ -25,6 +25,7 @@ export default defineI18nConfig(() => ({
         openForm: "Open form",
       },
       errors: {
+        errorNoMoreLocations: "No more fields available to be filled in!",
         errorGetRoutes:
           "It was not possible to calculate the route to the selected locations.",
         errorGetCurrentLocation:
@@ -65,6 +66,7 @@ export default defineI18nConfig(() => ({
         confirm: "Confirm",
         continue: "Do you want to continue?",
         edit: "Edit route",
+        noLocations: "No location added!",
       },
     },
     pt: {
@@ -90,6 +92,8 @@ export default defineI18nConfig(() => ({
         openForm: "Abrir formulário",
       },
       errors: {
+        errorNoMoreLocations:
+          "Não há mais campos disponíveis para serem preenchidos!",
         errorGetRoutes:
           "Não foi possível calcular o percurso para as localidades selecionadas",
         errorGetCurrentLocation:
@@ -104,7 +108,9 @@ export default defineI18nConfig(() => ({
         meansOfLocomotion: "Meios de Locomoção",
         routes: "Localidades",
         addDestination: "Adicionar destino",
-        atLeastTwo: "Ao menos duas coordenadas devem estar preenchidas",
+        atLeastTwo: "Ao menos duas coordenadas devem estar preenchidas.",
+        validCoord:
+          "A rota só poderá ser calculada para os campos com coordenadas válidas!",
         useCurrentLocation: "Usar localização atual",
         calculateRoute: "Calcular percurso",
         howToGetThere: "Como chegar",
@@ -129,6 +135,7 @@ export default defineI18nConfig(() => ({
         confirm: "Confirmar",
         continue: "Deseja continuar?",
         edit: "Editar rota",
+        noLocations: "Nenhuma localidade adicionada!",
       },
     },
   },

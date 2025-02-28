@@ -52,7 +52,7 @@ function onBlur() {
   <div class="relative">
     <span class="text-primary-1 font-bold">{{ label }}</span>
     <div
-      class="bg-white border border-base-100 rounded-md flex items-center text-base-300 relative"
+      class="bg-white border border-base-200 rounded-md flex items-center text-base-300 relative"
     >
       <div v-if="$slots.before" class="absolute z-10 w-10 h-10 lg:h-11">
         <slot name="before" />

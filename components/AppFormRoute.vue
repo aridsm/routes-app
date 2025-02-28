@@ -25,6 +25,7 @@ const { addNotification } = useNotificationStore();
 const loading = ref(false);
 const { t, locale } = useI18n();
 const isScrolling = ref(false);
+const gettingUserLocation = ref(false);
 const container = ref<HTMLDivElement>();
 const hasChanges = ref(false);
 
@@ -144,7 +145,9 @@ async function getRoutes() {
 
 async function setCurrentLocation() {
   try {
+    gettingUserLocation.value = true;
     const pos: any = await getUserPosition();
+    gettingUserLocation.value = false;
 
     let firstBlankField = routeForm.value.destinies.find(
       (destiny) => !destiny.value.trim()
@@ -153,15 +156,18 @@ async function setCurrentLocation() {
     if (!firstBlankField && routeForm.value.destinies.length < 6) {
       routeForm.value.destinies.push({
         id: Math.random(),
-        value: "",
-        coords: [],
+        value: [pos.longitude, pos.latitude].join(", "),
+        coords: [pos.longitude, pos.latitude],
       });
       firstBlankField = routeForm.value.destinies.at(-1);
-    }
-
-    if (firstBlankField) {
+    } else if (firstBlankField) {
       firstBlankField.coords = [pos.longitude, pos.latitude];
       firstBlankField.value = firstBlankField.coords.join(", ");
+    } else {
+      addNotification(
+        t("errors.errorNoMoreLocations"),
+        NotificationType.Failure
+      );
     }
   } catch (err: any) {
     addNotification(
@@ -307,7 +313,7 @@ function onScrollTop() {
         <button
           v-for="locomotion in locomotions"
           :key="locomotion.id"
-          class="bg-white border border-base-100 w-24 rounded-md h-9 lg:h-11 flex items-center justify-center text-base lg:text-xl hover:border-base-200 hover:bg-base-0"
+          class="bg-white border border-base-200 w-24 rounded-md h-9 lg:h-11 flex items-center justify-center text-base lg:text-xl hover:border-base-200 hover:bg-base-0"
           :class="{
             '!bg-primary-2 !border-primary-3 !text-white':
               routeForm.locomotion === locomotion.id,
@@ -321,12 +327,12 @@ function onScrollTop() {
     </section>
 
     <section class="px-4 lg:px-6">
-      <p
+      <!-- <p
         v-if="disabledCalculateRoute"
-        class="mt-1 bg-red-400/[.1] text-center mb-4 rounded-md px-4 py-3 pt-4 border border-red-400/[.3] text-red-500"
+        class="bg-red-400/[.1] text-center mb-3 rounded-md px-4 py-3 pt-4 border border-red-400/[.3] text-red-500"
       >
-        {{ t("labels.atLeastTwo") }}
-      </p>
+        {{ t("labels.validCoord") }}
+      </p> -->
       <div class="flex justify-between mb-1 lg:mb-2 items-center">
         <h2 class="font-bold tracking-wide">{{ t("labels.routes") }}</h2>
         <AppBtn
@@ -347,10 +353,21 @@ function onScrollTop() {
           <AppIcon icon="fa-solid fa-plus" class="!text-base-0 text-sm" />
         </AppBtn>
       </div>
-
+      <p
+        v-if="disabledCalculateRoute"
+        class="bg-red-400/[.1] text-center mb-3 rounded-md px-4 py-3 pt-4 border border-red-400/[.3] text-red-500"
+      >
+        {{ t("labels.atLeastTwo") }}
+      </p>
       <div class="flex flex-col gap-2 lg:gap-3">
         <AppLocationsBox v-model="routeForm.destinies" />
       </div>
+      <p
+        v-if="!routeForm.destinies?.length"
+        class="text-center py-4 text-base-300/[.6]"
+      >
+        {{ t("labels.noLocations") }}
+      </p>
       <div
         class="flex justify-between items-center flex-col lg:flex-row gap-3 mt-3"
       >
@@ -358,7 +375,11 @@ function onScrollTop() {
           class="bg-primary-1/[.1] rounded-full px-6 text-primary-1 hover:bg-primary-1/[.2] active:hover:bg-primary-1/[.3] pb-1 pt-2 text-sm lg:text-sm gap-3 items-center flex"
           @click="() => setCurrentLocation()"
         >
-          <AppIcon icon="fa-solid fa-map-pin" class="mb-1" />
+          <div
+            v-if="gettingUserLocation"
+            class="border-2 border-primary-1 mb-1 border-t-transparent animate-spin w-4 h-4 rounded-full"
+          />
+          <AppIcon v-else icon="fa-solid fa-map-pin" class="mb-1 w-4" />
           {{ t("labels.useCurrentLocation") }}
         </button>
         <AppBtn
@@ -374,7 +395,7 @@ function onScrollTop() {
     <AppLoading v-if="loading" class="flex-1" />
     <section
       v-if="segments && currentDestinies.length"
-      class="px-4 lg:px-6 relative pb-6"
+      class="px-4 lg:px-6 relative pb-4 lg:pb-6"
     >
       <div class="flex justify-between items-center mb-2">
         <h2 class="font-bold tracking-wide">
@@ -461,10 +482,16 @@ function onScrollTop() {
       </ul>
     </section>
   </div>
-  <div v-if="props.item" class="flex w-full p-4 lg:px-6 lg:pb-4 gap-2">
+  <div
+    v-if="props.item"
+    class="flex w-full px-4 pb-4 lg:px-6 lg:pb-6 gap-2"
+    :class="{
+      'mt-4': !props.item?.id,
+    }"
+  >
     <AppBtn
       icon
-      class="!w-[44px] !min-w-[44px] !h-full !bg-primary-2"
+      class="!w-[44px] !min-w-[44px] !h-full !bg-primary-2 !border-primary-3"
       :disabled="!hasChanges"
       @click="assignLastRouteData"
       :title="t('buttons.restore')"

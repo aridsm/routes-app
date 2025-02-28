@@ -266,7 +266,7 @@ const styles = computed(() => {
       </header>
 -->
       <button
-        class="absolute right-4 bg-base-300/[.5] bottom-8 z-[999] w-12 h-12 flex lg:hidden items-center justify-center text-lg rounded-full"
+        class="absolute right-4 bg-base-300/[.5] text-base-0 bottom-8 z-[999] w-12 h-12 flex lg:hidden items-center justify-center text-lg rounded-full"
         @click="openForm"
         :aria-label="t('buttons.drag')"
       >
