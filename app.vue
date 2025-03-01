@@ -5,7 +5,7 @@ watch(
   () => locale.value,
   () => {
     useHead({
-      link: [{ rel: "manifest", href: "manifest.json" }],
+      // link: [{ rel: "manifest", href: "manifest.json" }],
       meta: [
         {
           name: "description",
