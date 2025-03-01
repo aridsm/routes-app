@@ -22,15 +22,17 @@ onMounted(async () => {
 });
 
 async function loadMap() {
-  try {
-    const coords: {
-      longitude: number;
-      latitude: number;
-    } = await getUserPosition();
-    map.value = L.map("map").setView([coords.latitude, coords.longitude], 12);
-  } catch (err: any) {
-    map.value = L.map("map").setView([-14.235, -50], 4);
-  }
+  // try {
+  //   const coords: {
+  //     longitude: number;
+  //     latitude: number;
+  //   } = await getUserPosition();
+  //   map.value = L.map("map").setView([coords.latitude, coords.longitude], 12);
+  // } catch (err: any) {
+  //   map.value = L.map("map").setView([-14.235, -50], 4);
+  // }
+
+  map.value = L.map("map").setView([-14.235, -50], 4);
 
   map.value?.on("dragend", () => {
     map.value?.fitBounds(map.value.getBounds());

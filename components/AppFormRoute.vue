@@ -392,10 +392,13 @@ function onScrollTop() {
         </AppBtn>
       </div>
     </section>
-    <AppLoading v-if="loading" class="flex-1" />
+    <AppLoading v-if="loading" class="flex-1 py-6" />
     <section
       v-if="segments && currentDestinies.length"
-      class="px-4 lg:px-6 relative pb-4 lg:pb-6"
+      class="px-4 lg:px-6 relative"
+      :class="{
+        ' pb-4 lg:pb-6': !props.item,
+      }"
     >
       <div class="flex justify-between items-center mb-2">
         <h2 class="font-bold tracking-wide">
@@ -408,7 +411,7 @@ function onScrollTop() {
           <div class="flex gap-2 items-center">
             <AppIcon icon="fa-solid fa-car-side" />
             <span class="pt-1">
-              {{ convertMetersToKm(summary.distance || 0) }} km
+              {{ convertMetersToKm(summary.distance || 0) }}
             </span>
           </div>
           <div class="flex gap-2 items-center">
@@ -440,7 +443,7 @@ function onScrollTop() {
                 </span>
 
                 <div>
-                  {{ convertMetersToKm(segment.distance) }} km |
+                  {{ convertMetersToKm(segment.distance) }} |
                   {{ convertTime(segment.duration) }}
                 </div>
               </div>
@@ -484,10 +487,7 @@ function onScrollTop() {
   </div>
   <div
     v-if="props.item"
-    class="flex w-full px-4 pb-4 lg:px-6 lg:pb-6 gap-2"
-    :class="{
-      'mt-4': !props.item?.id,
-    }"
+    class="flex w-full px-4 pb-4 lg:px-6 lg:pb-6 gap-2 mt-4"
   >
     <AppBtn
       icon

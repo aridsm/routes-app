@@ -11,5 +11,7 @@ export function convertTime(seconds: number) {
 }
 
 export function convertMetersToKm(meters: number) {
-  return (meters / 1000).toFixed(2);
+  return `${(meters / 1000).toLocaleString("pt-BR", {
+    minimumFractionDigits: 1,
+  })}km`;
 }
