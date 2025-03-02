@@ -12,12 +12,13 @@ const { setLocale, locale, t } = useI18n();
 
 const polylines = ref<Layer>();
 const circlePoints = ref<CircleMarker[]>([]);
-const windowLoaded = computed(() => !window?.undefined);
-const loading = ref(false);
+const loading = ref(true);
 
 onMounted(async () => {
   loading.value = true;
   await loadMap();
+  onCheckScreenWidth();
+  window.addEventListener("resize", onCheckScreenWidth);
   loading.value = false;
 });
 
@@ -167,11 +168,6 @@ function onCheckScreenWidth() {
   }
 }
 
-onMounted(() => {
-  onCheckScreenWidth();
-  window.addEventListener("resize", onCheckScreenWidth);
-});
-
 const styles = computed(() => {
   if (formShown.value && !largeScreen.value) {
     return isDragging.value && posY.value > initialTop
@@ -198,8 +194,9 @@ const styles = computed(() => {
 <template>
   <div class="flex flex-1 overflow-hidden min-h-0 relative">
     <div
+      v-if="!loading"
       class="w-screen rounded-t-2xl container-form pb-32 lg:pb-0 z-[9999] absolute bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
-      :style="windowLoaded ? styles : undefined"
+      :style="styles"
     >
       <button
         ref="btnDrag"
@@ -268,6 +265,7 @@ const styles = computed(() => {
       </header>
 -->
       <button
+        v-if="!loading"
         class="absolute right-4 bg-base-300/[.5] text-base-0 bottom-8 z-[999] w-12 h-12 flex lg:hidden items-center justify-center text-lg rounded-full"
         @click="openForm"
         :aria-label="t('buttons.drag')"
@@ -276,6 +274,7 @@ const styles = computed(() => {
       </button>
 
       <AppOptions
+        v-if="!loading"
         :options="menuOptions"
         class="ml-auto !absolute top-4 right-4 z-[9999] bg-base-0 rounded-full"
       />

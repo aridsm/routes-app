@@ -229,6 +229,7 @@ function assignLastRouteData() {
   confirm({
     action: () => {
       routeForm.value = JSON.parse(JSON.stringify(props.item));
+      segments.value = undefined;
       addNotification(
         t("labels.routeWasRestored", { obj: routeForm.value.name })
       );
@@ -257,7 +258,6 @@ watch(
 );
 
 onBeforeRouteLeave((e) => {
-  console.log(e);
   if (hasChanges.value && !!getRouteById(routeForm.value.id!)) {
     const answer = window.confirm(t("labels.confirmExit"));
     if (!answer) return false;
