@@ -156,13 +156,13 @@ async function setCurrentLocation() {
     if (!firstBlankField && routeForm.value.destinies.length < 6) {
       routeForm.value.destinies.push({
         id: Math.random(),
-        value: [pos.longitude, pos.latitude].join(", "),
+        value: [pos.latitude, pos.longitude].join(", "),
         coords: [pos.longitude, pos.latitude],
       });
       firstBlankField = routeForm.value.destinies.at(-1);
     } else if (firstBlankField) {
       firstBlankField.coords = [pos.longitude, pos.latitude];
-      firstBlankField.value = firstBlankField.coords.join(", ");
+      firstBlankField.value = [pos.latitude, pos.longitude].join(", ");
     } else {
       addNotification(
         t("errors.errorNoMoreLocations"),

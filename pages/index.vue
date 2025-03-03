@@ -23,17 +23,7 @@ onMounted(async () => {
 });
 
 async function loadMap() {
-  // try {
-  //   const coords: {
-  //     longitude: number;
-  //     latitude: number;
-  //   } = await getUserPosition();
-  //   map.value = L.map("map").setView([coords.latitude, coords.longitude], 12);
-  // } catch (err: any) {
-  //   map.value = L.map("map").setView([-14.235, -50], 4);
-  // }
-
-  map.value = L.map("map").setView([-14.235, -50], 4);
+  map.value = L.map("map").setView([-14.235, -35], 4);
 
   map.value?.on("dragend", () => {
     map.value?.fitBounds(map.value.getBounds());
@@ -221,49 +211,6 @@ const styles = computed(() => {
       />
     </div>
     <div class="bg-base-300 relative flex-1 flex flex-col pb-0">
-      <!-- <header class="bg-primary-2 h-12 lg:h-16 flex">
-        <h1
-          class="bg-primary-3 px-4 lg:px-12 pt-1 text-sm lg:text-xl tracking-wider font-bold flex items-center"
-        >
-          LOGO
-        </h1>
-        <div class="px-4 lg:px-8 flex items-center w-full justify-between">
-          <p
-            v-if="!polylines"
-            class="mr-auto flex-1 pt-1 sm:pt-0 text-xs lg:text-base"
-          >
-            {{ t("header.insert") }}
-          </p>
-
-          <AppOptions :options="menuOptions" class="ml-auto 2xl:hidden" />
-
-          <div class="hidden 2xl:flex items-center ml-auto">
-            <a
-              href="https://leafletjs.com/"
-              target="_blank"
-              class="hover:bg-primary-3 rounded-full pt-1 px-6 transition"
-            >
-              Leaflet
-            </a>
-            <a
-              href="https://openrouteservice.org/"
-              target="_blank"
-              class="hover:bg-primary-3 rounded-full pt-1 px-6 transition"
-            >
-              OpenRouteService
-            </a>
-            <a
-              href="https://github.com/aridsm"
-              target="_blank"
-              class="p-1 mt-1 text-xl ml-2"
-              :title="t('labels.myGithub')"
-            >
-              <AppIcon icon="fa-brands fa-github" />
-            </a>
-          </div>
-        </div>
-      </header>
--->
       <button
         v-if="!loading"
         class="absolute right-4 bg-base-300/[.5] text-base-0 bottom-8 z-[999] w-12 h-12 flex lg:hidden items-center justify-center text-lg rounded-full"

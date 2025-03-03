@@ -60,7 +60,7 @@ async function onUpdateDestiny(value: string | undefined) {
 
   if (rgLongitudeLatitude.test(value)) {
     const coords = value.split(", ").map((coord) => +coord);
-    modelValue.value.coords = coords;
+    modelValue.value.coords = coords.reverse();
     return;
   }
 
@@ -115,7 +115,7 @@ function onSelectItem(item: any) {
       :aria-label="modelValue.coords.join(', ')"
     >
       <span class="!w-0 absolute overflow-hidden mr-3 transition">
-        {{ modelValue.coords.join(", ") }}
+        {{ modelValue.coords[1] }}, {{ modelValue.coords[0] }}
       </span>
       <AppIcon icon="fa-solid fa-map-pin" class="text-xs mb-1" />
     </div>
