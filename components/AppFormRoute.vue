@@ -13,7 +13,7 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (name: "set-polyline", polyline: any): void;
-  (name: "set-points", destinies: Destiny[]): void;
+  (name: "set-points"): void;
   (name: "set-item", data: Route): void;
 }>();
 
@@ -159,7 +159,7 @@ async function setCurrentLocation() {
         NotificationType.Failure
       );
     }
-    emits("set-points", routeForm.value.destinies);
+    emits("set-points");
   } catch (err: any) {
     addNotification(
       t("errors.errorGetCurrentLocation"),
@@ -239,6 +239,8 @@ function setItem(item: Route) {
 watch(
   () => [routeForm.value, props.item],
   () => {
+    currentDestinies.value = [];
+    segments.value = [];
     if (props.item) {
       hasChanges.value = objectsAreDifferent(props.item, routeForm.value);
     }
@@ -297,7 +299,9 @@ function onScrollTop() {
     </button>
     <section class="px-4 lg:px-6">
       <h2 class="font-bold tracking-wide mb-1 lg:mb-2">
-        {{ t("labels.meansOfLocomotion") }}
+        {{ t("labels.meansOfLocomotion") }} ({{
+          locomotions.find((l) => l.id === routeForm.locomotion)?.text
+        }})
       </h2>
 
       <div class="flex justify-center gap-2 lg:gap-3 w-full">
@@ -330,9 +334,8 @@ function onScrollTop() {
               })
           "
           icon
-          class="tooltip relative !rounded-full"
+          class="relative !rounded-full"
           :disabled="routeForm.destinies.length > 5"
-          :content="t('labels.addDestination')"
           :title="t('labels.addDestination')"
         >
           <AppIcon icon="fa-solid fa-plus" class="!text-base-0 text-sm" />
@@ -348,7 +351,7 @@ function onScrollTop() {
         <AppLocationsBox
           v-model="routeForm.destinies"
           :hovered-point="hoveredPoint"
-          @set-points="emits('set-points', routeForm.destinies)"
+          @set-points="emits('set-points')"
         />
       </div>
       <p

@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 const emits = defineEmits<{
   (name: "set-polyline", polyline: any): void;
-  (name: "set-points", destinies: Destiny[]): void;
+  (name: "set-points"): void;
 }>();
 
 const routeForm = defineModel<Route>({ required: true });
@@ -19,7 +19,7 @@ defineProps({
       :hovered-point="hoveredPoint"
       v-model="routeForm"
       @set-polyline="emits('set-polyline', $event)"
-      @set-points="(destinies) => emits('set-points', destinies)"
+      @set-points="() => emits('set-points')"
     />
   </main>
 </template>

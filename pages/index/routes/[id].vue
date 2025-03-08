@@ -12,7 +12,7 @@ defineProps({
 
 const emits = defineEmits<{
   (name: "set-polyline", polyline: any): void;
-  (name: "set-points", destinies: Destiny[]): void;
+  (name: "set-points"): void;
 }>();
 
 onMounted(() => {
@@ -29,7 +29,7 @@ onMounted(() => {
       :item="routeItem"
       @set-item="routeItem = $event"
       @set-polyline="emits('set-polyline', $event)"
-      @set-points="(destinies) => emits('set-points', destinies)"
+      @set-points="() => emits('set-points')"
     />
   </main>
 </template>

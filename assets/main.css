@@ -20,16 +20,3 @@ body {
 ::-webkit-scrollbar-thumb {
   @apply bg-base-300/[.2] hover:bg-base-300/[.4] rounded-full;
 }
-
-.tooltip {
-  @apply before:text-base-300 before:opacity-0 before:px-4 before:transition before:bg-base-0 before:pt-1 before:absolute before:-top-4 before:right-5 before:w-max before:rounded-md;
-}
-
-.tooltip::before {
-  content: attr(content);
-  box-shadow: 5px 5px 10px rgb(69, 73, 112, 0.1);
-}
-
-.tooltip:hover::before {
-  @apply opacity-100;
-}

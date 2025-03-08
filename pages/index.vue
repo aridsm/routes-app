@@ -5,8 +5,9 @@ import Leaflet from "leaflet";
 
 const L = inject<typeof Leaflet>("L")!;
 const activeTab = ref("navigate");
+const route = useRoute();
 
-const routeForm = ref<Route>({
+const defaultForm = computed(() => ({
   id: 0,
   name: "",
   locomotion: "driving-car" as locomotion,
@@ -22,9 +23,11 @@ const routeForm = ref<Route>({
       coords: [],
     },
   ] as Destiny[],
-});
+}));
 
-const map = ref<Map>();
+const routeForm = ref<Route>({ ...defaultForm.value });
+
+const map = shallowRef<Map>();
 const { setLocale, locale, t } = useI18n();
 
 const polylines = ref<Layer>();
@@ -32,6 +35,19 @@ const circlePoints = ref<CircleMarker[]>([]);
 const loading = ref(true);
 const hoveredCoords = ref("");
 const hoveredPoint = ref<Destiny>();
+
+watch(
+  () => route.fullPath,
+  () => {
+    if (route.name === "index-routes-id") {
+      routeForm.value = { ...defaultForm.value };
+      drawPoints();
+    }
+  },
+  {
+    immediate: true,
+  }
+);
 
 const tabs = computed(() => [
   {
@@ -102,20 +118,23 @@ function onClickMap(latitude: number, longitude: number) {
     firstBlankField.value = value;
   }
 
-  drawPoints(routeForm.value.destinies);
+  drawPoints();
 }
 
-function drawPoints(destinies: Destiny[]) {
+function drawPoints() {
   if (polylines.value) {
     map.value?.removeLayer(polylines.value);
   }
 
-  const points = destinies.filter((destiny) => destiny.coords.length);
-  // .map((destiny) => destiny.coords);
-
   circlePoints.value?.forEach((point: any) => {
     map.value?.removeLayer(point);
   });
+
+  if (!routeForm.value.destinies?.length) return;
+
+  const points = routeForm.value.destinies.filter(
+    (destiny) => destiny.coords.length
+  );
 
   const markers: LatLngExpression[] = [];
 
@@ -129,7 +148,7 @@ function drawPoints(destinies: Destiny[]) {
       color: "#4CC285",
     }).addTo(map.value!);
 
-    point.bindTooltip(destinies[i].value, {
+    point.bindTooltip(routeForm.value.destinies[i].value, {
       permanent: false,
       direction: "top",
       opacity: 0.8,
@@ -280,7 +299,7 @@ const styles = computed(() => {
         v-model="routeForm"
         :hovered-point="hoveredPoint"
         @set-polyline="(coords) => drawPolyline(coords)"
-        @set-points="(destinies) => drawPoints(destinies)"
+        @set-points="() => drawPoints()"
       />
     </div>
     <div class="bg-base-300 relative flex-1 flex flex-col pb-0">
