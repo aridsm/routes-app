@@ -4,8 +4,25 @@ import type { CircleMarker, LatLngExpression, Layer, Map } from "leaflet";
 import Leaflet from "leaflet";
 
 const L = inject<typeof Leaflet>("L")!;
-
 const activeTab = ref("navigate");
+
+const routeForm = ref<Route>({
+  id: 0,
+  name: "",
+  locomotion: "driving-car" as locomotion,
+  destinies: [
+    {
+      id: 1,
+      value: "",
+      coords: [],
+    },
+    {
+      id: 2,
+      value: "",
+      coords: [],
+    },
+  ] as Destiny[],
+});
 
 const map = ref<Map>();
 const { setLocale, locale, t } = useI18n();
@@ -13,6 +30,21 @@ const { setLocale, locale, t } = useI18n();
 const polylines = ref<Layer>();
 const circlePoints = ref<CircleMarker[]>([]);
 const loading = ref(true);
+const hoveredCoords = ref("");
+const hoveredPoint = ref<Destiny>();
+
+const tabs = computed(() => [
+  {
+    id: "navigate",
+    text: t("tabs.navigate"),
+    route: "/",
+  },
+  {
+    id: "routes",
+    text: t("tabs.savedRoutes"),
+    route: "/routes",
+  },
+]);
 
 onMounted(async () => {
   loading.value = true;
@@ -30,14 +62,14 @@ async function loadMap() {
     map.value?.fitBounds(map.value.getBounds());
   });
 
-  let tooltip: Leaflet.Tooltip;
-
   map.value?.on("click", (e) => {
-    if (tooltip) map.value?.removeLayer(tooltip);
-    tooltip = L.tooltip()
-      .setLatLng(e.latlng)
-      .setContent(`${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`)
-      .addTo(map.value as Map);
+    onClickMap(e.latlng.lat, e.latlng.lng);
+  });
+
+  map.value?.on("mousemove", (e) => {
+    hoveredCoords.value = `lat: ${e.latlng.lat.toFixed(
+      5
+    )}, lon: ${e.latlng.lng.toFixed(5)}`;
   });
 
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -47,25 +79,39 @@ async function loadMap() {
   }).addTo(map.value);
 }
 
-const tabs = computed(() => [
-  {
-    id: "navigate",
-    text: t("tabs.navigate"),
-    route: "/",
-  },
-  {
-    id: "routes",
-    text: t("tabs.savedRoutes"),
-    route: "/routes",
-  },
-]);
+function onClickMap(latitude: number, longitude: number) {
+  const lat = +Number(latitude).toFixed(5);
+  const lng = +Number(longitude).toFixed(5);
+
+  let firstBlankField = routeForm.value.destinies.find(
+    (destiny) => !destiny.value.trim()
+  );
+
+  const coords = [lng, lat];
+  const value = [lat, lng].join(", ");
+
+  if (!firstBlankField && routeForm.value.destinies.length < 6) {
+    routeForm.value.destinies.push({
+      id: Math.random(),
+      value,
+      coords,
+    });
+    firstBlankField = routeForm.value.destinies.at(-1);
+  } else if (firstBlankField) {
+    firstBlankField.coords = coords;
+    firstBlankField.value = value;
+  }
+
+  drawPoints(routeForm.value.destinies);
+}
 
 function drawPoints(destinies: Destiny[]) {
-  const points = destinies
-    .filter((destiny) => destiny.coords.length)
-    .map((destiny) => destiny.coords);
+  if (polylines.value) {
+    map.value?.removeLayer(polylines.value);
+  }
 
-  if (!points.length) return;
+  const points = destinies.filter((destiny) => destiny.coords.length);
+  // .map((destiny) => destiny.coords);
 
   circlePoints.value?.forEach((point: any) => {
     map.value?.removeLayer(point);
@@ -75,8 +121,8 @@ function drawPoints(destinies: Destiny[]) {
 
   for (let i = 0; i < points.length; i++) {
     const coord = {
-      lat: points[i][1],
-      lng: points[i][0],
+      lat: points[i].coords[1],
+      lng: points[i].coords[0],
     };
     const point = L.circleMarker(coord, {
       radius: 15,
@@ -90,11 +136,19 @@ function drawPoints(destinies: Destiny[]) {
       className: "point-tooltip",
     });
 
+    point.addEventListener("mouseover", (e) => {
+      hoveredPoint.value = points[i];
+    });
+
+    point.addEventListener("mouseout", (e) => {
+      hoveredPoint.value = undefined;
+    });
+
     circlePoints.value.push(point);
     markers.push(coord);
   }
 
-  map.value!.fitBounds(L.latLngBounds(markers));
+  // map.value!.fitBounds(L.latLngBounds(markers));
 }
 
 function drawPolyline(coords: LatLngExpression[]) {
@@ -223,6 +277,8 @@ const styles = computed(() => {
         </AppOptions>
       </div>
       <NuxtPage
+        v-model="routeForm"
+        :hovered-point="hoveredPoint"
         @set-polyline="(coords) => drawPolyline(coords)"
         @set-points="(destinies) => drawPoints(destinies)"
       />
@@ -245,9 +301,14 @@ const styles = computed(() => {
 
       <div
         id="map"
-        class="flex-1 min-h-0 bg-base-100 flex items-center justify-center"
+        class="flex-1 min-h-0 bg-base-100 flex items-center justify-center relative"
       >
         <AppLoading v-if="loading" class="text-base-300" />
+        <div
+          class="bg-base-0/[.3] left-0 bottom-0 z-[99999] absolute flex justify-end py-2 text-base-300 px-4"
+        >
+          {{ hoveredCoords }}
+        </div>
       </div>
     </div>
   </div>

@@ -6,6 +6,9 @@ const props = defineProps({
   item: {
     type: Object as PropType<Route>,
   },
+  hoveredPoint: {
+    type: Object as PropType<Destiny>,
+  },
 });
 
 const emits = defineEmits<{
@@ -13,6 +16,8 @@ const emits = defineEmits<{
   (name: "set-points", destinies: Destiny[]): void;
   (name: "set-item", data: Route): void;
 }>();
+
+const routeForm = defineModel<Route>({ required: true });
 
 const L = inject("L");
 const router = useRouter();
@@ -63,24 +68,6 @@ const locomotions = computed<{ id: locomotion; text: string; icon: string }[]>(
     },
   ]
 );
-
-const routeForm = ref<Route>({
-  id: 0,
-  name: "",
-  locomotion: "driving-car" as locomotion,
-  destinies: [
-    {
-      id: 1,
-      value: "",
-      coords: [],
-    },
-    {
-      id: 2,
-      value: "",
-      coords: [],
-    },
-  ] as Destiny[],
-});
 
 onMounted(() => {
   if (props.item) {
@@ -134,7 +121,6 @@ async function getRoutes() {
       );
       emits("set-polyline", polyline);
       summary.value = features.properties.summary;
-      // emits("set-points", routeForm.value.destinies);
     })
     .catch((err: any) => {
       addNotification(t("errors.errorGetRoutes"), NotificationType.Failure);
@@ -361,6 +347,7 @@ function onScrollTop() {
       <div class="flex flex-col gap-2 lg:gap-3">
         <AppLocationsBox
           v-model="routeForm.destinies"
+          :hovered-point="hoveredPoint"
           @set-points="emits('set-points', routeForm.destinies)"
         />
       </div>

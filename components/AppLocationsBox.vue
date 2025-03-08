@@ -1,6 +1,12 @@
 <script lang="tsx" setup>
 import Draggable from "vuedraggable";
 
+const props = defineProps({
+  hoveredPoint: {
+    type: Object as PropType<Destiny>,
+  },
+});
+
 const emits = defineEmits<{
   (name: "set-points"): void;
 }>();
@@ -34,7 +40,7 @@ function onEnd() {
         class="flex-1 block mb-1"
         :class="{
           ' !border-primary-1 border-dashed opacity-60':
-            draggingId === element.id,
+            draggingId === element.id || hoveredPoint?.id === element.id,
         }"
         :index="index"
         @delete="destinies.splice(index, 1), emits('set-points')"

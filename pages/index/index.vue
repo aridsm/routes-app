@@ -3,11 +3,21 @@ const emits = defineEmits<{
   (name: "set-polyline", polyline: any): void;
   (name: "set-points", destinies: Destiny[]): void;
 }>();
+
+const routeForm = defineModel<Route>({ required: true });
+
+defineProps({
+  hoveredPoint: {
+    type: Object as PropType<Destiny>,
+  },
+});
 </script>
 
 <template>
   <main class="flex-1 min-h-0 flex flex-col">
     <AppFormRoute
+      :hovered-point="hoveredPoint"
+      v-model="routeForm"
       @set-polyline="emits('set-polyline', $event)"
       @set-points="(destinies) => emits('set-points', destinies)"
     />
