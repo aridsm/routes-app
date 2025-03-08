@@ -12,6 +12,7 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (name: "change", value: Partial<Destiny>): void;
+  (name: "set-points"): void;
   (name: "delete"): void;
 }>();
 
@@ -59,8 +60,9 @@ async function onUpdateDestiny(value: string | undefined) {
   }
 
   if (rgLongitudeLatitude.test(value)) {
-    const coords = value.split(", ").map((coord) => +coord);
+    const coords = value.split(",").map((coord) => +coord);
     modelValue.value.coords = coords.reverse();
+    emits("set-points");
     return;
   }
 
@@ -81,6 +83,7 @@ function onSelectItem(item: any) {
   modelValue.value.coords = item.geometry.coordinates;
   showItems.value = false;
   emits("change", modelValue.value);
+  emits("set-points");
 }
 </script>
 

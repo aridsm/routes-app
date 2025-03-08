@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 const emits = defineEmits<{
   (name: "set-polyline", polyline: any): void;
-  (name: "set-points", points: any, destinies: Destiny[]): void;
+  (name: "set-points", destinies: Destiny[]): void;
 }>();
 </script>
 
@@ -9,9 +9,7 @@ const emits = defineEmits<{
   <main class="flex-1 min-h-0 flex flex-col">
     <AppFormRoute
       @set-polyline="emits('set-polyline', $event)"
-      @set-points="
-        (points, destinies) => emits('set-points', points, destinies)
-      "
+      @set-points="(destinies) => emits('set-points', destinies)"
     />
   </main>
 </template>

@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 import { useDraggable } from "@vueuse/core";
 import type { CircleMarker, LatLngExpression, Layer, Map } from "leaflet";
-import type Leaflet from "leaflet";
+import Leaflet from "leaflet";
 
 const L = inject<typeof Leaflet>("L")!;
 
@@ -23,10 +23,21 @@ onMounted(async () => {
 });
 
 async function loadMap() {
-  map.value = L.map("map").setView([-14.235, -35], 4);
+  const brazilCoords: LatLngExpression = [-13, -45];
+  map.value = L.map("map").setView(brazilCoords, 4);
 
   map.value?.on("dragend", () => {
     map.value?.fitBounds(map.value.getBounds());
+  });
+
+  let tooltip: Leaflet.Tooltip;
+
+  map.value?.on("click", (e) => {
+    if (tooltip) map.value?.removeLayer(tooltip);
+    tooltip = L.tooltip()
+      .setLatLng(e.latlng)
+      .setContent(`${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`)
+      .addTo(map.value as Map);
   });
 
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -49,7 +60,13 @@ const tabs = computed(() => [
   },
 ]);
 
-function drawPoints(points: number[][], destinies: Destiny[]) {
+function drawPoints(destinies: Destiny[]) {
+  const points = destinies
+    .filter((destiny) => destiny.coords.length)
+    .map((destiny) => destiny.coords);
+
+  if (!points.length) return;
+
   circlePoints.value?.forEach((point: any) => {
     map.value?.removeLayer(point);
   });
@@ -138,7 +155,7 @@ function openForm() {
   formShown.value = true;
 }
 
-const { y, isDragging } = useDraggable(btnDrag, {
+const { isDragging } = useDraggable(btnDrag, {
   onMove(position) {
     posY.value = position.y;
   },
@@ -207,7 +224,7 @@ const styles = computed(() => {
       </div>
       <NuxtPage
         @set-polyline="(coords) => drawPolyline(coords)"
-        @set-points="(points, destinies) => drawPoints(points, destinies)"
+        @set-points="(destinies) => drawPoints(destinies)"
       />
     </div>
     <div class="bg-base-300 relative flex-1 flex flex-col pb-0">

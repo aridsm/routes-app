@@ -10,7 +10,7 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (name: "set-polyline", polyline: any): void;
-  (name: "set-points", points: any, destinies: Destiny[]): void;
+  (name: "set-points", destinies: Destiny[]): void;
   (name: "set-item", data: Route): void;
 }>();
 
@@ -28,11 +28,12 @@ const isScrolling = ref(false);
 const gettingUserLocation = ref(false);
 const container = ref<HTMLDivElement>();
 const hasChanges = ref(false);
+const maxFields = 6;
 
 watch(
   () => locale.value,
   () => {
-    if (!disabledCalculateRoute.value) {
+    if (!disabledCalculateRoute.value && segments.value?.length) {
       getRoutes();
     }
   }
@@ -133,7 +134,7 @@ async function getRoutes() {
       );
       emits("set-polyline", polyline);
       summary.value = features.properties.summary;
-      emits("set-points", coords, routeForm.value.destinies);
+      // emits("set-points", routeForm.value.destinies);
     })
     .catch((err: any) => {
       addNotification(t("errors.errorGetRoutes"), NotificationType.Failure);
@@ -149,26 +150,30 @@ async function setCurrentLocation() {
     const pos: any = await getUserPosition();
     gettingUserLocation.value = false;
 
+    const coords = [pos.longitude, pos.latitude];
+    const value = [pos.latitude, pos.longitude].join(", ");
+
     let firstBlankField = routeForm.value.destinies.find(
       (destiny) => !destiny.value.trim()
     );
 
-    if (!firstBlankField && routeForm.value.destinies.length < 6) {
+    if (!firstBlankField && routeForm.value.destinies.length < maxFields) {
       routeForm.value.destinies.push({
         id: Math.random(),
-        value: [pos.latitude, pos.longitude].join(", "),
-        coords: [pos.longitude, pos.latitude],
+        value: value,
+        coords: coords,
       });
       firstBlankField = routeForm.value.destinies.at(-1);
     } else if (firstBlankField) {
-      firstBlankField.coords = [pos.longitude, pos.latitude];
-      firstBlankField.value = [pos.latitude, pos.longitude].join(", ");
+      firstBlankField.coords = coords;
+      firstBlankField.value = value;
     } else {
       addNotification(
         t("errors.errorNoMoreLocations"),
         NotificationType.Failure
       );
     }
+    emits("set-points", routeForm.value.destinies);
   } catch (err: any) {
     addNotification(
       t("errors.errorGetCurrentLocation"),
@@ -179,7 +184,7 @@ async function setCurrentLocation() {
 
 function onSelectLocomotion(locomotionId: locomotion) {
   routeForm.value.locomotion = locomotionId;
-  if (!disabledCalculateRoute.value) {
+  if (!disabledCalculateRoute.value && segments.value?.length) {
     getRoutes();
   }
 }
@@ -327,12 +332,6 @@ function onScrollTop() {
     </section>
 
     <section class="px-4 lg:px-6">
-      <!-- <p
-        v-if="disabledCalculateRoute"
-        class="bg-red-400/[.1] text-center mb-3 rounded-md px-4 py-3 pt-4 border border-red-400/[.3] text-red-500"
-      >
-        {{ t("labels.validCoord") }}
-      </p> -->
       <div class="flex justify-between mb-1 lg:mb-2 items-center">
         <h2 class="font-bold tracking-wide">{{ t("labels.routes") }}</h2>
         <AppBtn
@@ -360,7 +359,10 @@ function onScrollTop() {
         {{ t("labels.atLeastTwo") }}
       </p>
       <div class="flex flex-col gap-2 lg:gap-3">
-        <AppLocationsBox v-model="routeForm.destinies" />
+        <AppLocationsBox
+          v-model="routeForm.destinies"
+          @set-points="emits('set-points', routeForm.destinies)"
+        />
       </div>
       <p
         v-if="!routeForm.destinies?.length"

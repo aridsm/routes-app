@@ -1,6 +1,10 @@
 <script lang="tsx" setup>
 import Draggable from "vuedraggable";
 
+const emits = defineEmits<{
+  (name: "set-points"): void;
+}>();
+
 const destinies = defineModel<Destiny[]>({ required: true });
 const draggingId = ref<number>();
 function onStart(e: any) {
@@ -29,10 +33,12 @@ function onEnd() {
         @change="Object.assign(element, $event)"
         class="flex-1 block mb-1"
         :class="{
-          ' !border-primary-1 border-dashed': draggingId === element.id,
+          ' !border-primary-1 border-dashed opacity-60':
+            draggingId === element.id,
         }"
         :index="index"
-        @delete="destinies.splice(index, 1)"
+        @delete="destinies.splice(index, 1), emits('set-points')"
+        @set-points="emits('set-points')"
       />
     </template>
   </Draggable>

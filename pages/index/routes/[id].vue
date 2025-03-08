@@ -5,7 +5,7 @@ const routeItem = ref<Route>();
 
 const emits = defineEmits<{
   (name: "set-polyline", polyline: any): void;
-  (name: "set-points", points: any, destinies: Destiny[]): void;
+  (name: "set-points", destinies: Destiny[]): void;
 }>();
 
 onMounted(() => {
@@ -20,9 +20,7 @@ onMounted(() => {
       :item="routeItem"
       @set-item="routeItem = $event"
       @set-polyline="emits('set-polyline', $event)"
-      @set-points="
-        (points, destinies) => emits('set-points', points, destinies)
-      "
+      @set-points="(destinies) => emits('set-points', destinies)"
     />
   </main>
 </template>
