@@ -18,7 +18,6 @@ const { t } = useI18n();
 
 onClickOutside(activator, () => (optionsShown.value = false));
 
-const { top, left, width, height } = useElementBounding(activator);
 const { width: listWidth, height: listHeight } = useElementBounding(list);
 
 function openOptions() {
@@ -26,6 +25,7 @@ function openOptions() {
 }
 
 const styles = computed(() => {
+  const { top, left, width, height } = useElementBounding(activator);
   let posTop = top.value + height.value;
   if (posTop + listHeight.value + 20 > window.innerHeight) {
     posTop = top.value - listHeight.value;

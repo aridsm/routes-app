@@ -275,7 +275,7 @@ const styles = computed(() => {
   <div class="flex flex-1 overflow-hidden min-h-0 relative">
     <div
       v-if="!loading"
-      class="w-screen rounded-t-2xl container-form pb-32 lg:pb-0 z-[9999] absolute bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
+      class="w-screen rounded-t-2xl container-form pb-32 lg:pb-0 z-[999999] absolute bg-base-0 h-full lg:relative lg:!translate-y-0 lg:w-[33rem] flex flex-col"
       :style="styles"
     >
       <button
