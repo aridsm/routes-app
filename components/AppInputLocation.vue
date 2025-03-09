@@ -151,3 +151,9 @@ function onSelectItem(item: any) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.tooltip:hover span {
+  @apply overflow-visible !w-max relative;
+}
+</style>
