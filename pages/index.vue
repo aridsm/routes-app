@@ -321,9 +321,11 @@ const styles = computed(() => {
       <div
         id="map"
         class="flex-1 min-h-0 bg-base-100 flex items-center justify-center relative"
+        @mouseleave="hoveredCoords = ''"
       >
         <AppLoading v-if="loading" class="text-base-300" />
         <div
+          v-if="hoveredCoords"
           class="bg-base-0/[.3] left-0 bottom-0 z-[99999] absolute flex justify-end py-2 text-base-300 px-4"
         >
           {{ hoveredCoords }}
