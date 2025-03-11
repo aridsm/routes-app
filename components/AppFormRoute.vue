@@ -161,6 +161,7 @@ async function setCurrentLocation() {
     }
     emits("set-points");
   } catch (err: any) {
+    gettingUserLocation.value = false;
     addNotification(
       t("errors.errorGetCurrentLocation"),
       NotificationType.Failure
