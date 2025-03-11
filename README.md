@@ -1,75 +1,24 @@
-# Nuxt Minimal Starter
+# Routes PWA
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+![página inicial](https://github.com/aridsm/routes-app/blob/master/assets/main-page.png)
 
-## Setup
+Website para busca de rotas por meio de cidades fornecidas a partir da API [OpenRouteService](https://openrouteservice.org/) ou por coordenadas. As rotas (como chegar) são fornecidas pela mesma API e montadas com a livraria [Leaflet](https://leafletjs.com/).
 
-Make sure to install dependencies:
+## Principais tecnologias
+* Vue 3
+* Nuxt
+* Pinia
+* Tailwind
+* Leaflet
 
-```bash
-# npm
-npm install
+## Como usar
 
-# pnpm
+[Acesse aqui](https://aridsm-socialmediavue.netlify.app/) (PWA disponível para instalar)
+
+ou rode no seu pc:
+``` 
+git clone https://github.com/aridsm/routes-app.git
+cd routes-app
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
