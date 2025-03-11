@@ -6,7 +6,7 @@ const { t } = useI18n();
 <template>
   <AppModal
     v-model="shown"
-    z-index="999999"
+    z-index="9999999"
     content-class="w-full sm:w-[20rem] flex flex-col items-center"
   >
     <AppIcon
