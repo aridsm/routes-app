@@ -13,7 +13,7 @@ Website para busca de rotas por meio de cidades fornecidas a partir da API [Open
 
 ## Como usar
 
-[Acesse aqui](https://aridsm-socialmediavue.netlify.app/) (PWA disponível para instalar)
+[Acesse aqui](https://aridsm-routes-app.netlify.app/) (PWA disponível para instalar)
 
 ou rode no seu pc:
 ``` 
